@@ -41,8 +41,10 @@ using namespace std;
 using namespace chrono;
 using FrameRatio = duration<long, ratio<1, 60>>;
 
-static auto frame_start = high_resolution_clock::now();
-static auto frame_time  = FrameRatio{ 1 };
+static auto frame_start = system_clock::now();
+static auto frame_ratio = FrameRatio{ 1 };
+static auto frame_max   = 0.0f;
+static auto frame_min   = FLT_MAX;
 static int last_multi   = 0;
 
 static void __cdecl SetFrameMultiplier(int a1)
@@ -50,16 +52,37 @@ static void __cdecl SetFrameMultiplier(int a1)
 	if (a1 != last_multi)
 	{
 		last_multi = a1;
-		frame_time = FrameRatio{ a1 };
+		frame_ratio = FrameRatio{ a1 };
 	}
 }
 
 static void __cdecl CustomDeltaSleep()
 {
-	while (high_resolution_clock::now() - frame_start < frame_time)
+	while (system_clock::now() - frame_start < frame_ratio)
 		this_thread::yield();
 
-	frame_start = high_resolution_clock::now();
+	auto now = system_clock::now();
+	duration<float, milli> dur = now - frame_start;
+	frame_start = now;
+
+	auto frame_time = dur.count();
+
+	if (ControllerPointers[0] && ControllerPointers[0]->PressedButtons & Buttons_C)
+	{
+		frame_max = 0.0f;
+		frame_min = FLT_MAX;
+	}
+	else
+	{		
+		if (frame_time > frame_max)
+			frame_max = frame_time;
+		if (frame_time < frame_min)
+			frame_min = frame_time;
+	}
+
+	DisplayDebugStringFormatted(NJM_LOCATION(16, 16), "FRAME TIME NOW: %f", frame_time);
+	DisplayDebugStringFormatted(NJM_LOCATION(16, 17), "FRAME TIME MIN: %f", frame_min);
+	DisplayDebugStringFormatted(NJM_LOCATION(16, 18), "FRAME TIME MAX: %f", frame_max);
 }
 
 extern "C"
@@ -70,10 +93,8 @@ extern "C"
 
 	EXPORT void __cdecl Init(const char* path, const HelperFunctions& helperFunctions)
 	{
-#ifdef _DEBUG
 		WriteJump((void*)0x007899E0, CustomDeltaSleep);
 		WriteJump((void*)0x007899A0, SetFrameMultiplier);
-#endif
 
 		// Fixes the rotation of the second outcrop on your way out of Emerald Coast 1.
 		// This will be done via landtable once animated textures are implemented.
