@@ -1,7 +1,5 @@
 #pragma once
 
-#include <chrono>
-#include <thread>
 #include <random>
 
 #include <SADXModLoader.h>
