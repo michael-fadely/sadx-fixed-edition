@@ -26,7 +26,7 @@ DataArray(NJS_MESHSET_SADX, mesh_008BE1F4, 0x008BE1F4, 1);
 void __cdecl ItemBox_Display_Destroyed_Rotate(ObjectMaster* _this)
 {
 	auto v1 = _this->Data1;
-	SetCurrentTextureToCommon();
+	SetTextureToCommon();
 	njPushMatrix(nullptr);
 	njTranslateV(nullptr, &v1->Position);
 
@@ -45,7 +45,7 @@ void __cdecl ItemBox_Display_Unknown_Rotate(ObjectMaster* _this)
 		ItemBoxPowerups[6].Texture = MetalSonicFlag ? 98 : LifeTextures[GetCurrentCharacterID()];
 		if (IsVisible(&v1->Position, 20.0f))
 		{
-			SetCurrentTextureToCommon();
+			SetTextureToCommon();
 			njPushMatrixEx();
 
 			auto model = (NJS_MODEL_SADX *)late_alloca(44);
@@ -83,7 +83,7 @@ void __cdecl ItemBox_Display_Unknown_Rotate(ObjectMaster* _this)
 				// This was originally DrawModelIGuess_N, but that's wrong.
 				DrawModelIGuess(&ItemBox_Base_MODEL);
 
-				DrawModelIGuess_N(&ItemBox_Capsule_MODEL, 5);
+				DrawModelIGuess_Blend(&ItemBox_Capsule_MODEL, 5);
 
 				// This was originally DrawModelIGuess_N, but that's wrong.
 				DrawModelIGuess(&ItemBox_Top_MODEL);
@@ -103,7 +103,7 @@ void __cdecl ItemBox_Display_Rotate(ObjectMaster* _this)
 		ItemBoxPowerups[6].Texture = MetalSonicFlag ? 98 : LifeTextures[GetCurrentCharacterID()];
 		if (IsVisible(&v1->Position, 20.0f))
 		{
-			SetCurrentTextureToCommon();
+			SetTextureToCommon();
 			njPushMatrix(nullptr);
 			njTranslateV(nullptr, &v1->Position);
 
@@ -141,7 +141,7 @@ void __cdecl ItemBox_Display_Rotate(ObjectMaster* _this)
 				// This was originally DrawModelIGuess_N, but that's wrong.
 				DrawModelIGuess(&ItemBox_Base_MODEL);
 
-				DrawModelIGuess_N(&ItemBox_Capsule_MODEL, 5);
+				DrawModelIGuess_Blend(&ItemBox_Capsule_MODEL, 5);
 
 				// This was originally DrawModelIGuess_N, but that's wrong.
 				DrawModelIGuess(&ItemBox_Top_MODEL);
