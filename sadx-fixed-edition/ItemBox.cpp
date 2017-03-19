@@ -83,7 +83,7 @@ void __cdecl ItemBox_Display_Unknown_Rotate(ObjectMaster* _this)
 				// This was originally DrawModelIGuess_N, but that's wrong.
 				DrawModelIGuess(&ItemBox_Base_MODEL);
 
-				DrawModelIGuess_Blend(&ItemBox_Capsule_MODEL, 5);
+				DrawModelIGuess_Blend(&ItemBox_Capsule_MODEL, 1);
 
 				// This was originally DrawModelIGuess_N, but that's wrong.
 				DrawModelIGuess(&ItemBox_Top_MODEL);
@@ -141,7 +141,7 @@ void __cdecl ItemBox_Display_Rotate(ObjectMaster* _this)
 				// This was originally DrawModelIGuess_N, but that's wrong.
 				DrawModelIGuess(&ItemBox_Base_MODEL);
 
-				DrawModelIGuess_Blend(&ItemBox_Capsule_MODEL, 5);
+				DrawModelIGuess_Blend(&ItemBox_Capsule_MODEL, 1);
 
 				// This was originally DrawModelIGuess_N, but that's wrong.
 				DrawModelIGuess(&ItemBox_Top_MODEL);
