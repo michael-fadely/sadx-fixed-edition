@@ -33,7 +33,7 @@ void __cdecl ItemBox_Display_Destroyed_Rotate(ObjectMaster* _this)
 	// Rotate
 	njRotateEx((Angle*)&v1->Rotation, 0);
 
-	DrawModelIGuess(&ItemBox_Base_MODEL);
+	DrawModel(&ItemBox_Base_MODEL);
 	njPopMatrix(1u);
 }
 
@@ -76,17 +76,15 @@ void __cdecl ItemBox_Display_Unknown_Rotate(ObjectMaster* _this)
 				auto texId = ItemBoxPowerups[(int)_this->Data1->Scale.x].Texture;
 				ItemBoxPowerups_Index = (int)_this->Data1->Scale.x;
 				material->attr_texId = texId;
-				DrawModelIGuess(model);
+				DrawModel(model);
 				njPopMatrixEx();
 				SomeDepthThing = 0xC68C4000;
 
-				// This was originally DrawModelIGuess_N, but that's wrong.
-				DrawModelIGuess(&ItemBox_Base_MODEL);
-
-				DrawModelIGuess_Blend(&ItemBox_Capsule_MODEL, 1);
-
-				// This was originally DrawModelIGuess_N, but that's wrong.
-				DrawModelIGuess(&ItemBox_Top_MODEL);
+				// The original uses DrawModelIGuess_Blend for all three calls.
+				// Using the standard DrawModel for the opaque pieces fixes lighting issues.
+				DrawModel(&ItemBox_Base_MODEL);
+				DrawModelIGuess_Blend(&ItemBox_Capsule_MODEL, QueuedModelFlagsB_EnableZWrite);
+				DrawModel(&ItemBox_Top_MODEL);
 
 				SomeDepthThing = 0;
 			}
@@ -135,16 +133,14 @@ void __cdecl ItemBox_Display_Rotate(ObjectMaster* _this)
 				ItemBoxPowerups_Index = (int)_this->Data1->Scale.x;
 				material->attr_texId = v7;
 
-				DrawModelIGuess(model);
+				DrawModel(model);
 				njPopMatrixEx();
 
-				// This was originally DrawModelIGuess_N, but that's wrong.
-				DrawModelIGuess(&ItemBox_Base_MODEL);
-
-				DrawModelIGuess_Blend(&ItemBox_Capsule_MODEL, 1);
-
-				// This was originally DrawModelIGuess_N, but that's wrong.
-				DrawModelIGuess(&ItemBox_Top_MODEL);
+				// The original uses DrawModelIGuess_Blend for all three calls.
+				// Using the standard DrawModel for the opaque pieces fixes lighting issues.
+				DrawModel(&ItemBox_Base_MODEL);
+				DrawModelIGuess_Blend(&ItemBox_Capsule_MODEL, QueuedModelFlagsB_EnableZWrite);
+				DrawModel(&ItemBox_Top_MODEL);
 			}
 			njPopMatrixEx();
 		}

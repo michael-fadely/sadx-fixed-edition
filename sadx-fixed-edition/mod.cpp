@@ -52,7 +52,7 @@ extern "C"
 		// Fixes the rotation of the second outcrop on your way out of Emerald Coast 1.
 		// This will be done via landtable once animated textures are implemented.
 		LandTable* ecmesh110 = (LandTable*)0xE99CB8;
-		NJS_OBJECT* obj = ecmesh110->COLList[110].OBJECT;
+		NJS_OBJECT* obj = ecmesh110->Col[110].Model;
 
 		obj->ang[0] = 0;
 		obj->ang[1] = 0;
@@ -60,7 +60,7 @@ extern "C"
 
 		// Fixes the inverted water in Emerald Coast 2.
 		LandTable* ec2mesh = (LandTable*)0x01039E9C;
-		obj = ec2mesh->COLList[1].OBJECT;
+		obj = ec2mesh->Col[1].Model;
 		obj->ang[0] = 32768;
 		obj->pos[1] = -3.0f;
 		obj->pos[2] = -5850.0f;
