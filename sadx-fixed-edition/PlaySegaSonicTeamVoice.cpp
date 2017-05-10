@@ -4,22 +4,24 @@
 
 // TODO: Adjust for longer Japanese Big voice clips.
 
-static int CharacterVoice;
-static int VoiceLangeuage_rand;
-static bool AlternateEggman;
+static int CharacterVoice     = 0;
+static int VoiceLanguage_rand = 1;
+static bool AlternateEggman   = false;
 
 void PlaySegaSonicTeamVoice_init()
 {
-	// I really don't understand this, but it works.
 	std::random_device r;
 	std::mt19937 mt(r());
 	std::uniform_int_distribution<int> voice(0, 7);
-	std::uniform_int_distribution<int> lang(0, 1);
 	std::uniform_int_distribution<int> eggman(0, 1);
 
-	CharacterVoice      = voice(mt);
+	CharacterVoice = voice(mt);
+	AlternateEggman = eggman(mt) == 1;
+
+#ifdef ALLOW_JAPANESE
+	std::uniform_int_distribution<int> lang(0, 1);
 	VoiceLangeuage_rand = lang(mt);
-	AlternateEggman     = eggman(mt) == 1;
+#endif
 }
 
 // SEGA, Sonic Team
@@ -44,17 +46,21 @@ static int GetVoiceNumber(int value)
 static void PlaySegaSonicTeamVoice()
 {
 	if (SegaLogo_Frames == 1 && SoundManager_ptr == nullptr)
+	{
 		SoundManager_Load(LoadObject((LoadObj)0, 1, SoundManager_Load));
+	}
 
 	if (SegaLogo_Frames != 30)
+	{
 		return;
+	}
 
 	if (SoundManager_ptr != nullptr)
 	{
 		switch (SegaLogo_Mode)
 		{
 			case 1:
-				VoiceLanguage = VoiceLangeuage_rand;
+				VoiceLanguage = VoiceLanguage_rand;
 				PlayVoice(GetVoiceNumber(0));
 				SoundManager_ptr->MainSub(SoundManager_ptr);
 				break;

@@ -22,6 +22,7 @@ DataArray(NJS_MATERIAL, mat_008BE1C8, 0x008BE1C8, 1);
 DataArray(NJS_MESHSET_SADX, mesh_008BE1F4, 0x008BE1F4, 1);
 
 // TODO: Use trampolines
+// TODO: Ensure collision is rotated
 
 void __cdecl ItemBox_Display_Destroyed_Rotate(ObjectMaster* _this)
 {
