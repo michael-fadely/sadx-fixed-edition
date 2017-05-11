@@ -66,6 +66,10 @@ extern "C"
 		obj->pos[1] = -3.0f;
 		obj->pos[2] = -5850.0f;
 
+		// Fixes Rhino Tank treads
+		((NJS_MATERIAL*)0x038C9DF8)[0].attrflags &= ~NJD_FLAG_CLAMP_MASK;
+		((NJS_MATERIAL*)0x038CA220)[0].attrflags &= ~NJD_FLAG_CLAMP_MASK;
+
 		// Fixes a rendering issue with the red moving platform in Speed Highway.
 		// Thanks PkR!
 		matlist_022710E0[0].attrflags &= ~NJD_FLAG_USE_ALPHA;
