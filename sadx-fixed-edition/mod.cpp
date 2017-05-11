@@ -10,11 +10,12 @@
 
 #include "ItemBox.h"
 #include "PlaySegaSonicTeamVoice.h"
+#include "barrel.h"
 
 DataArray(NJS_MATERIAL, matlist_022710E0, 0x026710E0, 5);
 
-// Replaces:	mov	camerathing,	80000004h
-// With:		or	camerathing,	80000004h
+// Replaces: mov    camerathing,    80000004h
+// With:     or     camerathing,    80000004h
 // Based on information from VeritasDL and code from SADX Steam.
 // Note that SADX Steam seems to use 0x8000000C and not 0x80000004, but it doesn't seem to make a difference.
 static Uint8 freecam_fix[] = { 0x81, 0x0D, /*0xA8, 0xCB, 0xB2, 0x03, 0x0C, 0x00, 0x00, 0x80*/ }; // Uncomment to change 0x80000004 to 0x8000000C
@@ -34,11 +35,11 @@ static PatchInfo patches[] = {
 
 static PointerInfo jumps[] = {
 	// ItemBox
-	{ ItemBox_Display_Destroyed,	ItemBox_Display_Destroyed_Rotate },
-	{ ItemBox_Display_Unknown,		ItemBox_Display_Unknown_Rotate },
-	{ ItemBox_Display,				ItemBox_Display_Rotate },
-	{ (void*)0x0042CCC7,			PlaySegaSonicTeamVoice_asm },
-	{ (void*)0x0042CD2F,			PlaySegaSonicTeamVoice_asm },
+	{ ItemBox_Display_Destroyed, ItemBox_Display_Destroyed_Rotate },
+	{ ItemBox_Display_Unknown,   ItemBox_Display_Unknown_Rotate },
+	{ ItemBox_Display,           ItemBox_Display_Rotate },
+	{ (void*)0x0042CCC7,         PlaySegaSonicTeamVoice_asm },
+	{ (void*)0x0042CD2F,         PlaySegaSonicTeamVoice_asm },
 };
 
 extern "C"
@@ -76,6 +77,45 @@ extern "C"
 		// Fixes bounds for Sky Chase target reticle
 		WriteData((Float**)0x00628994, &HorizontalStretch);
 		WriteData((Float**)0x00628A13, &VerticalStretch);
+
+		// Replace the non-updated Eggmobile NPC model with a high-poly one to resolve a texture issue
+		*(NJS_OBJECT *)0x010FEF74 = *(NJS_OBJECT *)0x02EEB524;
+
+		// Replace the texlist for the above model in the NPC data array
+		WriteData((NJS_TEXLIST**)0x007D2B22, (NJS_TEXLIST*)0x02EE0AA4);
+
+		// Texlist fix for Eggman in Super Sonic story
+		*(NJS_TEXLIST**)0x02BD5FE4 = (NJS_TEXLIST*)0x02EE0AA4;
+
+		// E101 Beta lighting fix
+		((NJS_OBJECT*)0x014D857C)->basicdxmodel->mats[1].attrflags |= NJD_FLAG_IGNORE_LIGHT;
+		((NJS_OBJECT*)0x014D857C)->basicdxmodel->mats[2].attrflags |= NJD_FLAG_IGNORE_LIGHT;
+		((NJS_OBJECT*)0x014D887C)->basicdxmodel->mats[1].attrflags |= NJD_FLAG_IGNORE_LIGHT;
+		((NJS_OBJECT*)0x014D943C)->basicdxmodel->mats[7].attrflags |= NJD_FLAG_IGNORE_LIGHT;
+		((NJS_OBJECT*)0x014DC25C)->basicdxmodel->mats[0].attrflags |= NJD_FLAG_IGNORE_LIGHT;
+		((NJS_OBJECT*)0x014DD4A4)->basicdxmodel->mats[0].attrflags |= NJD_FLAG_IGNORE_LIGHT;
+
+		// Zero holding Amy lighting fix
+		((NJS_OBJECT*)0x31A4DFC)->basicdxmodel->mats[11].attrflags &= ~NJD_FLAG_IGNORE_LIGHT;
+
+		// Eggman model lighting fix
+		((NJS_OBJECT*)0x008961E0)->basicdxmodel->mats[0].attrflags &= ~NJD_FLAG_USE_ALPHA;
+		((NJS_OBJECT*)0x008964CC)->basicdxmodel->mats[0].attrflags &= ~NJD_FLAG_USE_ALPHA;
+		((NJS_OBJECT*)0x008980DC)->basicdxmodel->mats[0].attrflags &= ~NJD_FLAG_USE_ALPHA;
+		((NJS_OBJECT*)0x00897DE0)->basicdxmodel->mats[0].attrflags &= ~NJD_FLAG_USE_ALPHA;
+
+		// Eggman model (Eggmobile) lighting fix
+		((NJS_OBJECT*)0x02EE22C0)->basicdxmodel->mats[0].attrflags &= ~NJD_FLAG_USE_ALPHA;
+		((NJS_OBJECT*)0x02EE25AC)->basicdxmodel->mats[0].attrflags &= ~NJD_FLAG_USE_ALPHA;
+		((NJS_OBJECT*)0x02EE4194)->basicdxmodel->mats[0].attrflags &= ~NJD_FLAG_USE_ALPHA;
+		((NJS_OBJECT*)0x02EE3E98)->basicdxmodel->mats[0].attrflags &= ~NJD_FLAG_USE_ALPHA;
+
+		// Tikal lighting fixes
+		((NJS_OBJECT*)0x008CE058)->basicdxmodel->mats[0].attrflags &= ~NJD_FLAG_USE_ALPHA;
+		((NJS_OBJECT*)0x008CC658)->basicdxmodel->mats[0].attrflags &= ~NJD_FLAG_USE_ALPHA;
+
+		// Twinkle Park barrel model (requires a different "boo" texture in OBJ_TWINKLE!)
+		*(NJS_OBJECT*)0x0279D364 = object_000A0E58;
 
 		PlaySegaSonicTeamVoice_init();
 	}

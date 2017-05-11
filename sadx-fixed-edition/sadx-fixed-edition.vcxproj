@@ -89,6 +89,7 @@
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="barrel.h" />
     <ClInclude Include="ItemBox.h" />
     <ClInclude Include="PlaySegaSonicTeamVoice.h" />
     <ClInclude Include="stdafx.h" />
