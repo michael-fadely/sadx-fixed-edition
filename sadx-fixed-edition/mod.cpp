@@ -44,6 +44,11 @@ extern "C"
 
 	EXPORT void __cdecl Init(const char* path, const HelperFunctions& helperFunctions)
 	{
+		// Disable stretchy feet, as in vanilla SADX it just uses a broken model.
+		// This is not the most ideal fix as it could hinder mods that want to
+		// take advantage of the shoe morph system.
+		WriteData<uint8_t>((uint8_t*)0x00493500, 0xC3);
+
 		// Fixes the rotation of the second outcrop on your way out of Emerald Coast 1.
 		// This will be done via landtable once animated textures are implemented.
 		LandTable* ecmesh110 = (LandTable*)0xE99CB8;
