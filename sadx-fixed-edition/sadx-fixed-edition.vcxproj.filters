@@ -36,6 +36,12 @@
     <ClInclude Include="MR_FinalEggFix.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="PerfectChaosFixes.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="HotShelterWaterfallFix.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -54,6 +60,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="MR_FinalEggFix.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="PerfectChaosFixes.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

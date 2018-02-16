@@ -6,6 +6,8 @@
 #include "barrel.h"
 #include "SkyChaseFixes.h"
 #include "MR_FinalEggFix.h"
+#include "PerfectChaosFixes.h"
+#include "HotShelterWaterfallFix.h"
 
 DataArray(NJS_MATERIAL, matlist_022710E0, 0x026710E0, 5);
 DataArray(SkyboxScale, SkyboxScale_SkyChase1, 0x027D6CE0, 3);
@@ -274,5 +276,30 @@ extern "C"
 
 		// Fix the water ripple created by air bubbles
 		WriteJump(reinterpret_cast<void*>(0x7A81A0), FixedBubbleRipple);
+
+		// Fix Perfect Chaos damage animation
+		if (GetModuleHandle(TEXT("DCMods_Main.dll")) == nullptr)
+		{
+			WriteJump(reinterpret_cast<void*>(0x005632F0), Chaos7Explosion_DisplayX);
+			WriteJump(reinterpret_cast<void*>(0x005633C0), Chaos7Damage_DisplayX);
+		}
+	}
+	EXPORT void __cdecl OnFrame()
+	{
+		if (CurrentLevel == 12 && CurrentAct == 0 && GameState != 16)
+		{
+			if (HotShelterWaterThing < 65.0f && HotShelterWaterThing > 0.0f)
+			{
+				WaterThing_VShift = (WaterThing_VShift - 16 * FramerateSetting) % 255;
+				for (int i = 0; i < 56; i++)
+				{
+					uv_014107E0[i].v = uv_014107E0_0[i].v + WaterThing_VShift;
+				}
+				for (int i = 0; i < 20; i++)
+				{
+					uv_01410790[i].v = uv_01410790_0[i].v + WaterThing_VShift * 2;
+				}
+			}
+		}
 	}
 }
