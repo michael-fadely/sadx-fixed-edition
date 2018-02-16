@@ -93,6 +93,8 @@
   <ItemGroup>
     <ClInclude Include="barrel.h" />
     <ClInclude Include="ItemBox.h" />
+    <ClInclude Include="MR_FinalEggFix.h" />
+    <ClInclude Include="OFinalEgg.h" />
     <ClInclude Include="PlaySegaSonicTeamVoice.h" />
     <ClInclude Include="SkyChaseFixes.h" />
     <ClInclude Include="stdafx.h" />
@@ -100,6 +102,7 @@
   <ItemGroup>
     <ClCompile Include="ItemBox.cpp" />
     <ClCompile Include="mod.cpp" />
+    <ClCompile Include="MR_FinalEggFix.cpp" />
     <ClCompile Include="PlaySegaSonicTeamVoice.cpp" />
     <ClCompile Include="SkyChaseFixes.cpp" />
     <ClCompile Include="stdafx.cpp">

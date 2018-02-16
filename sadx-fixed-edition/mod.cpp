@@ -5,6 +5,7 @@
 #include "PlaySegaSonicTeamVoice.h"
 #include "barrel.h"
 #include "SkyChaseFixes.h"
+#include "MR_FinalEggFix.h"
 
 DataArray(NJS_MATERIAL, matlist_022710E0, 0x026710E0, 5);
 DataArray(SkyboxScale, SkyboxScale_SkyChase1, 0x027D6CE0, 3);
@@ -129,7 +130,7 @@ extern "C"
 		// Sky Chase fixes
 		if (GetModuleHandle(TEXT("DCMods_Main.dll")) == nullptr)
 		{
-			//Resolution related fixes
+			// Resolution related fixes
 			HorizontalResolution_float = HorizontalResolution;
 			VerticalResolution_float = VerticalResolution;
 			VerticalResolutionHalf_float = VerticalResolution_float / 2.0f;
@@ -143,18 +144,18 @@ extern "C"
 			WriteData((float**)0x00627F4D, &float_tornadospeed); //Tornado Speed (always 1)
 			WriteData((float**)0x00627F60, &float_one); //Horizontal limit
 			WriteData((float**)0x00627F72, &float_one); //Vertical limit
-			//Hodai fixes
+			// Hodai fixes
 			WriteData((float**)0x0043854D, &HorizontalResolution_float);
 			WriteData((float**)0x00438571, &VerticalResolutionHalf_float);
 			WriteData((float**)0x0043857F, &VerticalResolutionHalf_float);
 			WriteCall((void*)0x0062C764, SetSkyChaseRocketColor);
 			WriteCall((void*)0x0062C704, RenderSkyChaseRocket);
-			//Sky Chase reticle and multiplier fixes
+			// Sky Chase reticle and multiplier fixes
 			float_reticlespeedmultiplier = VerticalResolution / 480.0f;
 			float_targetsize = pow(VerticalResolution / 15.0f, 2);
 			WriteData((float**)0x628AF7, &float_targetsize); //Target size
 			WriteData((float**)0x00629472, &float_reticlespeedmultiplier); //Target speed
-			//Limits for reticle
+			// Limits for reticle
 			WriteData((float**)0x00628994, &float_reticlespeedmultiplier); //right
 			WriteData((float**)0x006289B6, &float_reticlespeedmultiplier); //left
 			WriteData((float**)0x006289F1, &float_reticlespeedmultiplier); //top
@@ -163,7 +164,7 @@ extern "C"
 			WriteData((float**)0x006289BC, &SkyChaseLimit_Left);
 			WriteData((float**)0x006289F7, &SkyChaseLimit_Top);
 			WriteData((float**)0x00628A19, &SkyChaseLimit_Bottom);
-			//Visual stuff
+			// Visual stuff
 			WriteCall((void*)0x00629004, TornadoTarget_Render);
 			WriteCall((void*)0x00628FE5, TornadoTarget_Render);
 			WriteJump((void*)0x00628DB0, TornadoTargetSprite_TargetLock_DisplayX);
@@ -188,11 +189,13 @@ extern "C"
 				DrawDist_SkyChase1[i].Maximum = -60000.0f;
 			}
 		}
-		// Replace the non-updated Eggmobile NPC model with a high-poly one to resolve a texture issue
-		*reinterpret_cast<NJS_OBJECT *>(0x010FEF74) = *reinterpret_cast<NJS_OBJECT *>(0x02EEB524);
-
-		// Replace the texlist for the above model in the NPC data array
-		WriteData(reinterpret_cast<NJS_TEXLIST**>(0x007D2B22), reinterpret_cast<NJS_TEXLIST*>(0x02EE0AA4));
+		if (GetModuleHandle(TEXT("SA1_Chars.dll")) == nullptr)
+		{
+			// Replace the non-updated Eggmobile NPC model with a high-poly one to resolve a texture issue
+			*reinterpret_cast<NJS_OBJECT *>(0x010FEF74) = *reinterpret_cast<NJS_OBJECT *>(0x02EEB524);
+			// Replace the texlist for the above model in the NPC data array
+			WriteData(reinterpret_cast<NJS_TEXLIST**>(0x007D2B22), reinterpret_cast<NJS_TEXLIST*>(0x02EE0AA4));
+		}
 
 		// Texlist fix for Eggman in Super Sonic story
 		*reinterpret_cast<NJS_TEXLIST**>(0x02BD5FE4) = reinterpret_cast<NJS_TEXLIST*>(0x02EE0AA4);
@@ -228,5 +231,12 @@ extern "C"
 		*reinterpret_cast<NJS_OBJECT*>(0x0279D364) = object_000A0E58;
 
 		PlaySegaSonicTeamVoice_init();
+
+		// Fix Mystic Ruins base
+		if (GetModuleHandle(TEXT("DCMods_Main.dll")) == nullptr) FixMRBase_Apply(path, helperFunctions);
+
+		// Fix Egg Carrier Garden ocean animation
+		((LandTable *)0x3405E54)->Col[74].Flags = 0x84000002;
+		((NJS_MATERIAL*)0x033FE3F8)->diffuse.color = 0x7FB2B2B2;
 	}
 }
