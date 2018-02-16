@@ -16,6 +16,7 @@ DataPointer(float, CurrentDrawDistance, 0x03ABDC74);
 DataPointer(D3DCOLORVALUE, stru_3D0B7C8, 0x3D0B7C8);
 DataPointer(NJS_OBJECT, stru_8B22F4, 0x8B22F4);
 FunctionPointer(double, sub_49EAD0, (float a1, float a2, float a3, int a4), 0x49EAD0);
+FunctionPointer(float, sub_49E920, (float x, float y, float z, Rotation3 *rotation), 0x49E920);
 
 // Replaces: mov    camerathing,    80000004h
 // With:     or     camerathing,    80000004h
@@ -50,6 +51,14 @@ double __cdecl AmenboFix(float a1, float a2, float a3, int a4)
 	u = sub_49EAD0(a1, a2, a3, a4);
 	if (u == -1000000) u = a2;
 	return u;
+}
+
+float __cdecl EggKeeperFix(float x, float y, float z, Rotation3 *rotation)
+{
+	float result;
+	result = sub_49E920(x, y, z, rotation);
+	if (result == -1000000) result = y;
+	return result;
 }
 
 void __cdecl FixedBubbleRipple(ObjectMaster *a1)
@@ -100,10 +109,11 @@ extern "C"
 	EXPORT ModInfo     SADXModInfo = { ModLoaderVer };
 	EXPORT void __cdecl Init(const char* path, const HelperFunctions& helperFunctions)
 	{
-		//Config stuff
+		// Config stuff
 		const IniFile *config = new IniFile(std::string(path) + "\\config.ini");
 		EnableSegaVoice = config->getBool("General settings", "EnableSegaVoice", true);
 		SegaVoiceLanguage = config->getString("General settings", "SegaVoiceLanguage", "English");
+
 		// SEGA/Sonic Team voice
 		if (GetModuleHandle(TEXT("DLCs_Main.dll")) == nullptr && EnableSegaVoice == true)
 		{
@@ -161,6 +171,9 @@ extern "C"
 
 		// Fixes missing Sweep badniks in Emerald Coast 2 and Twinkle Park 2
 		if (GetModuleHandle(TEXT("DCMods_Main.dll")) == nullptr) WriteCall(reinterpret_cast<void*>(0x007AA9F9), AmenboFix);
+
+		// Fixes a missing Egg Keeper in Final Egg 1
+		if (GetModuleHandle(TEXT("DCMods_Main.dll")) == nullptr) WriteCall(reinterpret_cast<void*>(0x0049EFE7), EggKeeperFix);
 
 		// Sky Chase fixes
 		if (GetModuleHandle(TEXT("DCMods_Main.dll")) == nullptr)
