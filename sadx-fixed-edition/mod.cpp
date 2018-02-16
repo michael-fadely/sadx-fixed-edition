@@ -7,6 +7,7 @@
 #include "barrel.h"
 
 DataArray(NJS_MATERIAL, matlist_022710E0, 0x026710E0, 5);
+FunctionPointer(double, sub_49EAD0, (float a1, float a2, float a3, int a4), 0x49EAD0);
 
 // Replaces: mov    camerathing,    80000004h
 // With:     or     camerathing,    80000004h
@@ -16,6 +17,16 @@ DataArray(NJS_MATERIAL, matlist_022710E0, 0x026710E0, 5);
 static const Uint8  freecam_fix[] = { 0x81, 0x0D, /*0xA8, 0xCB, 0xB2, 0x03, 0x0C, 0x00, 0x00, 0x80*/ };
 static const Uint8  mt_kusa_nop[] = { 0x90, 0x90 };
 static Uint32 CasinoSpawnY  = 0xC3480001; // Secretly a float of about -200.0
+
+static float KusaDistance = 50000.0f;
+
+double __cdecl AmenboFix(float a1, float a2, float a3, int a4)
+{
+	double u;
+	u = sub_49EAD0(a1, a2, a3, a4);
+	if (u == -1000000) u = a2;
+	return u;
+}
 
 static PatchInfo patches[] = {
 	// MT_KUSA. Also found at 0x0082F216 in SADX 2010
@@ -85,6 +96,12 @@ extern "C"
 		// Fixes bounds for Sky Chase target reticle
 		WriteData(reinterpret_cast<float**>(0x00628994), &HorizontalStretch);
 		WriteData(reinterpret_cast<float**>(0x00628A13), &VerticalStretch);
+
+		// Makes the animated MtKusa model show up at larger distances
+		WriteData(reinterpret_cast<float**>(0x00608331), &KusaDistance);
+
+		// Fixes missing Sweep badniks in Emerald Coast 2 and Twinkle Park 2
+		if (GetModuleHandle(TEXT("DCMods_Main.dll")) == nullptr) WriteCall(reinterpret_cast<void*>(0x007AA9F9), AmenboFix);
 
 		// Replace the non-updated Eggmobile NPC model with a high-poly one to resolve a texture issue
 		*reinterpret_cast<NJS_OBJECT *>(0x010FEF74) = *reinterpret_cast<NJS_OBJECT *>(0x02EEB524);
