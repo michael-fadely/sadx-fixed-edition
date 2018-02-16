@@ -12,3 +12,9 @@
 #define _arraylengthandptr(data) (int)LengthOfArray(data), data
 
 #define EXPORT __declspec(dllexport)
+
+extern std::string SegaVoiceLanguage;
+extern int VoiceLanguage_sel;
+extern bool AlternateEggman;
+extern float HorizontalResolution_float;
+extern float VerticalResolution_float;
