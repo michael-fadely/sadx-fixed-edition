@@ -286,18 +286,21 @@ extern "C"
 	}
 	EXPORT void __cdecl OnFrame()
 	{
-		if (CurrentLevel == 12 && CurrentAct == 0 && GameState != 16)
+		if (GetModuleHandle(TEXT("DLCs_Main.dll")) == nullptr)
 		{
-			if (HotShelterWaterThing < 65.0f && HotShelterWaterThing > 0.0f)
+			if (CurrentLevel == 12 && CurrentAct == 0 && GameState != 16)
 			{
-				WaterThing_VShift = (WaterThing_VShift - 16 * FramerateSetting) % 255;
-				for (int i = 0; i < 56; i++)
+				if (HotShelterWaterThing < 65.0f && HotShelterWaterThing > 0.0f)
 				{
-					uv_014107E0[i].v = uv_014107E0_0[i].v + WaterThing_VShift;
-				}
-				for (int i = 0; i < 20; i++)
-				{
-					uv_01410790[i].v = uv_01410790_0[i].v + WaterThing_VShift * 2;
+					WaterThing_VShift = (WaterThing_VShift - 16 * FramerateSetting) % 255;
+					for (int i = 0; i < 56; i++)
+					{
+						uv_014107E0[i].v = uv_014107E0_0[i].v + WaterThing_VShift;
+					}
+					for (int i = 0; i < 20; i++)
+					{
+						uv_01410790[i].v = uv_01410790_0[i].v + WaterThing_VShift * 2;
+					}
 				}
 			}
 		}
