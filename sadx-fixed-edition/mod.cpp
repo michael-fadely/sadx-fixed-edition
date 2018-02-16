@@ -1,12 +1,14 @@
 #include "stdafx.h"
-
 #include <SADXModLoader.h>
-
 #include "ItemBox.h"
 #include "PlaySegaSonicTeamVoice.h"
 #include "barrel.h"
+#include "SkyChaseFixes.h"
 
 DataArray(NJS_MATERIAL, matlist_022710E0, 0x026710E0, 5);
+DataArray(SkyboxScale, SkyboxScale_SkyChase1, 0x027D6CE0, 3);
+DataArray(DrawDistance, DrawDist_SkyChase1, 0x027D6D58, 3);
+DataPointer(float, CurrentDrawDistance, 0x03ABDC74);
 FunctionPointer(double, sub_49EAD0, (float a1, float a2, float a3, int a4), 0x49EAD0);
 
 // Replaces: mov    camerathing,    80000004h
@@ -39,23 +41,27 @@ static PatchInfo patches[] = {
 	{ reinterpret_cast<void*>(0x005C0D5D), &CasinoSpawnY, sizeof(float) }
 };
 
-static PointerInfo jumps[] = {
-	// ItemBox
-	{ ItemBox_Display_Destroyed,           ItemBox_Display_Destroyed_Rotate },
-	{ ItemBox_Display_Unknown,             ItemBox_Display_Unknown_Rotate },
-	{ ItemBox_Display,                     ItemBox_Display_Rotate },
-	{ reinterpret_cast<void*>(0x0042CCC7), PlaySegaSonicTeamVoice_asm },
-	{ reinterpret_cast<void*>(0x0042CD2F), PlaySegaSonicTeamVoice_asm },
-};
-
 extern "C"
 {
 	EXPORT PatchList   Patches[]   = { { _arrayptrandlength(patches) } };
-	EXPORT PointerList Jumps[]     = { { _arrayptrandlength(jumps) } };
 	EXPORT ModInfo     SADXModInfo = { ModLoaderVer };
-
 	EXPORT void __cdecl Init(const char* path, const HelperFunctions& helperFunctions)
 	{
+		// SEGA/Sonic Team voice
+		if (GetModuleHandle(TEXT("DLCs_Main.dll")) == nullptr)
+		{
+			WriteJump(reinterpret_cast<void*>(0x0042CCC7), PlaySegaSonicTeamVoice_asm);
+			WriteJump(reinterpret_cast<void*>(0x0042CD2F), PlaySegaSonicTeamVoice_asm);
+		}
+
+		// Item box fixes
+		if (GetModuleHandle(TEXT("DCMods_Main.dll")) == nullptr)
+		{
+			WriteJump(ItemBox_Display_Destroyed, ItemBox_Display_Destroyed_Rotate);
+			WriteJump(ItemBox_Display_Unknown, ItemBox_Display_Unknown_Rotate);
+			WriteJump(ItemBox_Display, ItemBox_Display_Rotate);
+		}
+
 		if (GetModuleHandle(TEXT("SA1_Chars.dll")) == nullptr)
 		{
 			// Disable stretchy feet, as in vanilla SADX it just uses a broken model.
@@ -86,16 +92,11 @@ extern "C"
 		reinterpret_cast<NJS_MATERIAL*>(0x038CA220)[0].attrflags &= ~NJD_FLAG_CLAMP_MASK;
 
 		// Fixes a rendering issue with the red moving platform in Speed Highway.
-		// Thanks PkR!
 		matlist_022710E0[0].attrflags &= ~NJD_FLAG_USE_ALPHA;
 
 		// Leon fix
 		WriteData(reinterpret_cast<float**>(0x004CD75A), &_nj_screen_.w);
 		WriteData(reinterpret_cast<float**>(0x004CD77C), &_nj_screen_.h);
-
-		// Fixes bounds for Sky Chase target reticle
-		WriteData(reinterpret_cast<float**>(0x00628994), &HorizontalStretch);
-		WriteData(reinterpret_cast<float**>(0x00628A13), &VerticalStretch);
 
 		// Makes the animated MtKusa model show up at larger distances
 		WriteData(reinterpret_cast<float**>(0x00608331), &KusaDistance);
@@ -103,6 +104,27 @@ extern "C"
 		// Fixes missing Sweep badniks in Emerald Coast 2 and Twinkle Park 2
 		if (GetModuleHandle(TEXT("DCMods_Main.dll")) == nullptr) WriteCall(reinterpret_cast<void*>(0x007AA9F9), AmenboFix);
 
+		// Sky Chase fixes
+		if (GetModuleHandle(TEXT("DCMods_Main.dll")) == nullptr)
+		{
+			((NJS_OBJECT*)0x028DFD34)->basicdxmodel->mats[0].diffuse.color = 0xFFFFFFFF; //Sky materials in Act 1
+			((NJS_OBJECT*)0x028175F4)->basicdxmodel->mats[0].diffuse.color = 0xFFFFFFFF; //Sky materials in Act 1
+			SkyboxScale_SkyChase1->Far.x = 4.0f;
+			SkyboxScale_SkyChase1->Far.y = 4.0f;
+			SkyboxScale_SkyChase1->Far.z = 4.0f;
+			SkyboxScale_SkyChase1->Near.x = 4.0f;
+			SkyboxScale_SkyChase1->Near.y = 4.0f;
+			SkyboxScale_SkyChase1->Near.z = 4.0f;
+			SkyboxScale_SkyChase1->Normal.x = 4.0f;
+			SkyboxScale_SkyChase1->Normal.y = 4.0f;
+			SkyboxScale_SkyChase1->Normal.z = 4.0f;
+			WriteData((char*)0x0062751B, 0x00, 1); //Force Tornado light type
+			WriteData((char*)0x0062AC1F, 0x00, 1); //Force Tornado light type (transformation cutscene)
+			for (int i = 0; i < 3; i++)
+			{
+				DrawDist_SkyChase1[i].Maximum = -60000.0f;
+			}
+		}
 		// Replace the non-updated Eggmobile NPC model with a high-poly one to resolve a texture issue
 		*reinterpret_cast<NJS_OBJECT *>(0x010FEF74) = *reinterpret_cast<NJS_OBJECT *>(0x02EEB524);
 

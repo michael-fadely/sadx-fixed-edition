@@ -92,12 +92,14 @@
     <ClInclude Include="barrel.h" />
     <ClInclude Include="ItemBox.h" />
     <ClInclude Include="PlaySegaSonicTeamVoice.h" />
+    <ClInclude Include="SkyChaseFixes.h" />
     <ClInclude Include="stdafx.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ItemBox.cpp" />
     <ClCompile Include="mod.cpp" />
     <ClCompile Include="PlaySegaSonicTeamVoice.cpp" />
+    <ClCompile Include="SkyChaseFixes.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
