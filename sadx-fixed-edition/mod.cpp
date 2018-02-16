@@ -11,6 +11,8 @@ DataArray(NJS_MATERIAL, matlist_022710E0, 0x026710E0, 5);
 DataArray(SkyboxScale, SkyboxScale_SkyChase1, 0x027D6CE0, 3);
 DataArray(DrawDistance, DrawDist_SkyChase1, 0x027D6D58, 3);
 DataPointer(float, CurrentDrawDistance, 0x03ABDC74);
+DataPointer(D3DCOLORVALUE, stru_3D0B7C8, 0x3D0B7C8);
+DataPointer(NJS_OBJECT, stru_8B22F4, 0x8B22F4);
 FunctionPointer(double, sub_49EAD0, (float a1, float a2, float a3, int a4), 0x49EAD0);
 
 // Replaces: mov    camerathing,    80000004h
@@ -46,6 +48,37 @@ double __cdecl AmenboFix(float a1, float a2, float a3, int a4)
 	u = sub_49EAD0(a1, a2, a3, a4);
 	if (u == -1000000) u = a2;
 	return u;
+}
+
+void __cdecl FixedBubbleRipple(ObjectMaster *a1)
+{
+	NJS_VECTOR *v1; // esi@1
+	double v2; // st7@2
+	v1 = (NJS_VECTOR *)a1->UnknownB_ptr;
+	if (!MissedFrames)
+	{
+		SetTextureToCommon();
+		njPushMatrix(0);
+		njTranslateV(0, v1);
+		BackupConstantAttr();
+		AddConstantAttr(0, NJD_FLAG_USE_ALPHA);
+		v2 = v1[1].z;
+		stru_3D0B7C8.g = v1[1].z;
+		stru_3D0B7C8.b = v2;
+		stru_3D0B7C8.a = v2;
+		SetMaterialAndSpriteColor((NJS_ARGB *)&stru_3D0B7C8);
+		njColorBlendingMode(0, NJD_COLOR_BLENDING_SRCALPHA);
+		njColorBlendingMode(NJD_DESTINATION_COLOR, NJD_COLOR_BLENDING_ONE);
+		njScale(0, v1[2].z, 1.0f, v1[2].z);
+		DrawQueueDepthBias = -17952; //Copied from sub_4B9290
+		ProcessModelNode_A_WrapperB(&stru_8B22F4, (QueuedModelFlagsB)0); //Replaced DrawModel_Callback
+		DrawQueueDepthBias = 0; //Copied from sub_4B9290
+		ClampGlobalColorThing_Thing();
+		njColorBlendingMode(0, NJD_COLOR_BLENDING_SRCALPHA);
+		njColorBlendingMode(NJD_DESTINATION_COLOR, NJD_COLOR_BLENDING_INVSRCALPHA);
+		RestoreConstantAttr();
+		njPopMatrix(1u);
+	}
 }
 
 static PatchInfo patches[] = {
@@ -238,5 +271,8 @@ extern "C"
 		// Fix Egg Carrier Garden ocean animation
 		((LandTable *)0x3405E54)->Col[74].Flags = 0x84000002;
 		((NJS_MATERIAL*)0x033FE3F8)->diffuse.color = 0x7FB2B2B2;
+
+		// Fix the water ripple created by air bubbles
+		WriteJump(reinterpret_cast<void*>(0x7A81A0), FixedBubbleRipple);
 	}
 }
