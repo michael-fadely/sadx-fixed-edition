@@ -16,7 +16,7 @@ void PlaySegaSonicTeamVoice_init()
 	std::uniform_int_distribution<int> eggman(0, 1);
 	CharacterVoice = voice(mt);
 	AlternateEggman = eggman(mt) == 1;
-	if (SegaVoiceLanguage == "Japanese")
+	if (SegaVoiceLanguage == 2)
 	{
 		VoiceLanguage_sel = 0;
 		if (CharacterVoice == 5)

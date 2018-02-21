@@ -28,8 +28,7 @@ static const Uint8  mt_kusa_nop[] = { 0x90, 0x90 };
 static Uint32 CasinoSpawnY  = 0xC3480001; // Secretly a float of about -200.0
 
 static float KusaDistance = 50000.0f;
-static bool EnableSegaVoice = true;
-std::string SegaVoiceLanguage = "English";
+int SegaVoiceLanguage = 1;
 
 static float float_one = 1.0f;
 static float float_tornadospeed = 1.0f;
@@ -111,11 +110,10 @@ extern "C"
 	{
 		// Config stuff
 		const IniFile *config = new IniFile(std::string(path) + "\\config.ini");
-		EnableSegaVoice = config->getBool("General settings", "EnableSegaVoice", true);
-		SegaVoiceLanguage = config->getString("General settings", "SegaVoiceLanguage", "English");
+		SegaVoiceLanguage = config->getInt("General settings", "SegaVoiceLanguage", 1);
 
 		// SEGA/Sonic Team voice
-		if (GetModuleHandle(TEXT("DLCs_Main.dll")) == nullptr && EnableSegaVoice == true)
+		if (GetModuleHandle(TEXT("DLCs_Main.dll")) == nullptr && SegaVoiceLanguage > 0)
 		{
 
 			WriteJump(reinterpret_cast<void*>(0x0042CCC7), PlaySegaSonicTeamVoice_asm);

@@ -13,7 +13,7 @@
 
 #define EXPORT __declspec(dllexport)
 
-extern std::string SegaVoiceLanguage;
+extern int SegaVoiceLanguage;
 extern int VoiceLanguage_sel;
 extern bool AlternateEggman;
 extern float HorizontalResolution_float;
