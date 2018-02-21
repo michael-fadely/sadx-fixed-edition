@@ -305,6 +305,8 @@ extern "C"
 	}
 	EXPORT void __cdecl OnFrame()
 	{
+		//Fix broken welds after playing as Metal Sonic
+		if (GameMode == GameModes_CharSel && MetalSonicFlag == true) MetalSonicFlag = false;
 		if (DLLLoaded_DLCs == false)
 		{
 			if (CurrentLevel == 12 && CurrentAct == 0 && GameState != 16)
