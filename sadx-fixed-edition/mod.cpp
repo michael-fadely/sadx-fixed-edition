@@ -18,6 +18,10 @@ DataPointer(NJS_OBJECT, stru_8B22F4, 0x8B22F4);
 FunctionPointer(double, sub_49EAD0, (float a1, float a2, float a3, int a4), 0x49EAD0);
 FunctionPointer(float, sub_49E920, (float x, float y, float z, Rotation3 *rotation), 0x49E920);
 
+bool DLLLoaded_DCMods = false;
+static bool DLLLoaded_DLCs = false;
+bool DLLLoaded_SA1Chars = false;
+
 // Replaces: mov    camerathing,    80000004h
 // With:     or     camerathing,    80000004h
 // Based on information from VeritasDL and code from SADX Steam.
@@ -108,12 +112,16 @@ extern "C"
 	EXPORT ModInfo     SADXModInfo = { ModLoaderVer };
 	EXPORT void __cdecl Init(const char* path, const HelperFunctions& helperFunctions)
 	{
+		// Check which DLLs are loaded
+		if (GetModuleHandle(TEXT("SA1_Chars.dll")) != nullptr) DLLLoaded_SA1Chars = true;
+		if (GetModuleHandle(TEXT("DCMods_Main.dll")) != nullptr) DLLLoaded_DCMods = true;
+		if (GetModuleHandle(TEXT("DLCs_Main.dll")) != nullptr) DLLLoaded_DLCs = true;
 		// Config stuff
 		const IniFile *config = new IniFile(std::string(path) + "\\config.ini");
 		SegaVoiceLanguage = config->getInt("General settings", "SegaVoiceLanguage", 1);
 
 		// SEGA/Sonic Team voice
-		if (GetModuleHandle(TEXT("DLCs_Main.dll")) == nullptr && SegaVoiceLanguage > 0)
+		if (DLLLoaded_DLCs == false && SegaVoiceLanguage > 0)
 		{
 
 			WriteJump(reinterpret_cast<void*>(0x0042CCC7), PlaySegaSonicTeamVoice_asm);
@@ -121,14 +129,14 @@ extern "C"
 		}
 
 		// Item box fixes
-		if (GetModuleHandle(TEXT("DCMods_Main.dll")) == nullptr)
+		if (DLLLoaded_DCMods == false)
 		{
 			WriteJump(ItemBox_Display_Destroyed, ItemBox_Display_Destroyed_Rotate);
 			WriteJump(ItemBox_Display_Unknown, ItemBox_Display_Unknown_Rotate);
 			WriteJump(ItemBox_Display, ItemBox_Display_Rotate);
 		}
 
-		if (GetModuleHandle(TEXT("SA1_Chars.dll")) == nullptr)
+		if (DLLLoaded_SA1Chars == false)
 		{
 			// Disable stretchy feet, as in vanilla SADX it just uses a broken model.
 			// This is not the most ideal fix as it could hinder mods that want to
@@ -168,13 +176,13 @@ extern "C"
 		WriteData(reinterpret_cast<float**>(0x00608331), &KusaDistance);
 
 		// Fixes missing Sweep badniks in Emerald Coast 2 and Twinkle Park 2
-		if (GetModuleHandle(TEXT("DCMods_Main.dll")) == nullptr) WriteCall(reinterpret_cast<void*>(0x007AA9F9), AmenboFix);
+		if (DLLLoaded_DCMods == false) WriteCall(reinterpret_cast<void*>(0x007AA9F9), AmenboFix);
 
 		// Fixes a missing Egg Keeper in Final Egg 1
-		if (GetModuleHandle(TEXT("DCMods_Main.dll")) == nullptr) WriteCall(reinterpret_cast<void*>(0x0049EFE7), EggKeeperFix);
+		if (DLLLoaded_DCMods == false) WriteCall(reinterpret_cast<void*>(0x0049EFE7), EggKeeperFix);
 
 		// Sky Chase fixes
-		if (GetModuleHandle(TEXT("DCMods_Main.dll")) == nullptr)
+		if (DLLLoaded_DCMods == false)
 		{
 			// Resolution related fixes
 			HorizontalResolution_float = HorizontalResolution;
@@ -235,7 +243,7 @@ extern "C"
 				DrawDist_SkyChase1[i].Maximum = -60000.0f;
 			}
 		}
-		if (GetModuleHandle(TEXT("SA1_Chars.dll")) == nullptr)
+		if (DLLLoaded_SA1Chars == false)
 		{
 			// Replace the non-updated Eggmobile NPC model with a high-poly one to resolve a texture issue
 			*reinterpret_cast<NJS_OBJECT *>(0x010FEF74) = *reinterpret_cast<NJS_OBJECT *>(0x02EEB524);
@@ -279,7 +287,7 @@ extern "C"
 		PlaySegaSonicTeamVoice_init();
 
 		// Fix Mystic Ruins base
-		if (GetModuleHandle(TEXT("DCMods_Main.dll")) == nullptr) FixMRBase_Apply(path, helperFunctions);
+		if (DLLLoaded_DCMods == false) FixMRBase_Apply(path, helperFunctions);
 
 		// Fix Egg Carrier Garden ocean animation
 		((LandTable *)0x3405E54)->Col[74].Flags = 0x84000002;
@@ -289,7 +297,7 @@ extern "C"
 		WriteJump(reinterpret_cast<void*>(0x7A81A0), FixedBubbleRipple);
 
 		// Fix Perfect Chaos damage animation
-		if (GetModuleHandle(TEXT("DCMods_Main.dll")) == nullptr)
+		if (DLLLoaded_DCMods == false)
 		{
 			WriteJump(reinterpret_cast<void*>(0x005632F0), Chaos7Explosion_DisplayX);
 			WriteJump(reinterpret_cast<void*>(0x005633C0), Chaos7Damage_DisplayX);
@@ -297,7 +305,7 @@ extern "C"
 	}
 	EXPORT void __cdecl OnFrame()
 	{
-		if (GetModuleHandle(TEXT("DLCs_Main.dll")) == nullptr)
+		if (DLLLoaded_DLCs == false)
 		{
 			if (CurrentLevel == 12 && CurrentAct == 0 && GameState != 16)
 			{
