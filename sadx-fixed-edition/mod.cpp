@@ -253,7 +253,10 @@ extern "C"
 
 	EXPORT void __cdecl OnRenderDeviceReset()
 	{
-		SkyChaseFix_UpdateBounds();
+		if (!DLLLoaded_DCMods)
+		{
+			SkyChaseFix_UpdateBounds();
+		}
 	}
 
 	EXPORT void __cdecl OnFrame()
