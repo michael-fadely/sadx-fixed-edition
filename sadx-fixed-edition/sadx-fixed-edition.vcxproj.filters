@@ -13,6 +13,9 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="mod-loader-common">
+      <UniqueIdentifier>{b856dcfe-6c80-4efa-a420-b0a11d17a25c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -42,6 +45,12 @@
     <ClInclude Include="HotShelterWaterfallFix.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\sadx-mod-loader\mod-loader-common\ModLoaderCommon\IniFile.hpp">
+      <Filter>mod-loader-common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\sadx-mod-loader\mod-loader-common\ModLoaderCommon\TextConv.hpp">
+      <Filter>mod-loader-common</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -64,6 +73,12 @@
     </ClCompile>
     <ClCompile Include="PerfectChaosFixes.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sadx-mod-loader\mod-loader-common\ModLoaderCommon\IniFile.cpp">
+      <Filter>mod-loader-common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sadx-mod-loader\mod-loader-common\ModLoaderCommon\TextConv.cpp">
+      <Filter>mod-loader-common</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
