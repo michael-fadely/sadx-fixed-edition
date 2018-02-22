@@ -12,15 +12,14 @@
 DataArray(NJS_MATERIAL, matlist_022710E0, 0x026710E0, 5);
 DataArray(SkyboxScale, SkyboxScale_SkyChase1, 0x027D6CE0, 3);
 DataArray(DrawDistance, DrawDist_SkyChase1, 0x027D6D58, 3);
-DataPointer(float, CurrentDrawDistance, 0x03ABDC74);
-DataPointer(D3DCOLORVALUE, stru_3D0B7C8, 0x3D0B7C8);
+DataPointer(NJS_ARGB, stru_3D0B7C8, 0x3D0B7C8);
 DataPointer(NJS_OBJECT, stru_8B22F4, 0x8B22F4);
 FunctionPointer(double, sub_49EAD0, (float a1, float a2, float a3, int a4), 0x49EAD0);
 FunctionPointer(float, sub_49E920, (float x, float y, float z, Rotation3 *rotation), 0x49E920);
 
-bool DLLLoaded_DCMods = false;
+static bool DLLLoaded_DCMods = false;
 static bool DLLLoaded_DLCs = false;
-bool DLLLoaded_SA1Chars = false;
+static bool DLLLoaded_SA1Chars = false;
 
 // Replaces: mov    camerathing,    80000004h
 // With:     or     camerathing,    80000004h
@@ -29,7 +28,7 @@ bool DLLLoaded_SA1Chars = false;
 // Uncomment to change 0x80000004 to 0x8000000C
 static const Uint8  freecam_fix[] = { 0x81, 0x0D, /*0xA8, 0xCB, 0xB2, 0x03, 0x0C, 0x00, 0x00, 0x80*/ };
 static const Uint8  mt_kusa_nop[] = { 0x90, 0x90 };
-static Uint32 CasinoSpawnY  = 0xC3480001; // Secretly a float of about -200.0
+static Uint32 CasinoSpawnY = 0xC3480001; // Secretly a float of about -200.0
 
 static float KusaDistance = 50000.0f;
 int SegaVoiceLanguage = 1;
@@ -50,40 +49,36 @@ static float widescreenthing = 103.0f;
 
 double __cdecl AmenboFix(float a1, float a2, float a3, int a4)
 {
-	double u;
-	u = sub_49EAD0(a1, a2, a3, a4);
+	double u = sub_49EAD0(a1, a2, a3, a4);
 	if (u == -1000000) u = a2;
 	return u;
 }
 
 float __cdecl EggKeeperFix(float x, float y, float z, Rotation3 *rotation)
 {
-	float result;
-	result = sub_49E920(x, y, z, rotation);
+	float result = sub_49E920(x, y, z, rotation);
 	if (result == -1000000) result = y;
 	return result;
 }
 
 void __cdecl FixedBubbleRipple(ObjectMaster *a1)
 {
-	NJS_VECTOR *v1; // esi@1
-	double v2; // st7@2
-	v1 = (NJS_VECTOR *)a1->UnknownB_ptr;
+	auto v1 = (NJS_VECTOR *)a1->UnknownB_ptr;
 	if (!MissedFrames)
 	{
 		SetTextureToCommon();
-		njPushMatrix(0);
-		njTranslateV(0, v1);
+		njPushMatrix(nullptr);
+		njTranslateV(nullptr, v1);
 		BackupConstantAttr();
 		AddConstantAttr(0, NJD_FLAG_USE_ALPHA);
-		v2 = v1[1].z;
+		float v2 = v1[1].z;
 		stru_3D0B7C8.g = v1[1].z;
 		stru_3D0B7C8.b = v2;
 		stru_3D0B7C8.a = v2;
-		SetMaterialAndSpriteColor((NJS_ARGB *)&stru_3D0B7C8);
+		SetMaterialAndSpriteColor(&stru_3D0B7C8);
 		njColorBlendingMode(0, NJD_COLOR_BLENDING_SRCALPHA);
 		njColorBlendingMode(NJD_DESTINATION_COLOR, NJD_COLOR_BLENDING_ONE);
-		njScale(0, v1[2].z, 1.0f, v1[2].z);
+		njScale(nullptr, v1[2].z, 1.0f, v1[2].z);
 		DrawQueueDepthBias = -17952; //Copied from sub_4B9290
 		ProcessModelNode_A_WrapperB(&stru_8B22F4, (QueuedModelFlagsB)0); //Replaced DrawModel_Callback
 		DrawQueueDepthBias = 0; //Copied from sub_4B9290
@@ -94,6 +89,10 @@ void __cdecl FixedBubbleRipple(ObjectMaster *a1)
 		njPopMatrix(1u);
 	}
 }
+
+// Because ain't nobody got time for compiler warnings
+#define _arrayptrandlength(data) data, (int)LengthOfArray(data)
+#define _arraylengthandptr(data) (int)LengthOfArray(data), data
 
 static PatchInfo patches[] = {
 	// MT_KUSA. Also found at 0x0082F216 in SADX 2010
@@ -108,8 +107,9 @@ static PatchInfo patches[] = {
 
 extern "C"
 {
-	EXPORT PatchList   Patches[]   = { { _arrayptrandlength(patches) } };
-	EXPORT ModInfo     SADXModInfo = { ModLoaderVer };
+	EXPORT PatchList Patches[]   = { { _arrayptrandlength(patches) } };
+	EXPORT ModInfo   SADXModInfo = { ModLoaderVer, nullptr, nullptr, 0, nullptr, 0, nullptr, 0, nullptr, 0 };
+
 	EXPORT void __cdecl Init(const char* path, const HelperFunctions& helperFunctions)
 	{
 		// Check which DLLs are loaded
@@ -121,7 +121,7 @@ extern "C"
 		SegaVoiceLanguage = config->getInt("General settings", "SegaVoiceLanguage", 1);
 
 		// SEGA/Sonic Team voice
-		if (DLLLoaded_DLCs == false && SegaVoiceLanguage > 0)
+		if (!DLLLoaded_DLCs && SegaVoiceLanguage > 0)
 		{
 
 			WriteJump(reinterpret_cast<void*>(0x0042CCC7), PlaySegaSonicTeamVoice_asm);
@@ -129,14 +129,14 @@ extern "C"
 		}
 
 		// Item box fixes
-		if (DLLLoaded_DCMods == false)
+		if (!DLLLoaded_DCMods)
 		{
 			WriteJump(ItemBox_Display_Destroyed, ItemBox_Display_Destroyed_Rotate);
 			WriteJump(ItemBox_Display_Unknown, ItemBox_Display_Unknown_Rotate);
 			WriteJump(ItemBox_Display, ItemBox_Display_Rotate);
 		}
 
-		if (DLLLoaded_SA1Chars == false)
+		if (!DLLLoaded_SA1Chars)
 		{
 			// Disable stretchy feet, as in vanilla SADX it just uses a broken model.
 			// This is not the most ideal fix as it could hinder mods that want to
@@ -176,17 +176,17 @@ extern "C"
 		WriteData(reinterpret_cast<float**>(0x00608331), &KusaDistance);
 
 		// Fixes missing Sweep badniks in Emerald Coast 2 and Twinkle Park 2
-		if (DLLLoaded_DCMods == false) WriteCall(reinterpret_cast<void*>(0x007AA9F9), AmenboFix);
+		if (!DLLLoaded_DCMods) WriteCall(reinterpret_cast<void*>(0x007AA9F9), AmenboFix);
 
 		// Fixes a missing Egg Keeper in Final Egg 1
-		if (DLLLoaded_DCMods == false) WriteCall(reinterpret_cast<void*>(0x0049EFE7), EggKeeperFix);
+		if (!DLLLoaded_DCMods) WriteCall(reinterpret_cast<void*>(0x0049EFE7), EggKeeperFix);
 
 		// Sky Chase fixes
-		if (DLLLoaded_DCMods == false)
+		if (!DLLLoaded_DCMods)
 		{
 			// Resolution related fixes
-			HorizontalResolution_float = HorizontalResolution;
-			VerticalResolution_float = VerticalResolution;
+			HorizontalResolution_float = static_cast<float>(HorizontalResolution);
+			VerticalResolution_float = static_cast<float>(VerticalResolution);
 			VerticalResolutionHalf_float = VerticalResolution_float / 2.0f;
 			WriteJump((void*)0x628D50, TornadoCalculateCenterPoint); //Calculate center for bullets
 			if (HorizontalResolution_float / VerticalResolution_float > 1.4f)
@@ -236,14 +236,14 @@ extern "C"
 			SkyboxScale_SkyChase1->Normal.x = 4.0f;
 			SkyboxScale_SkyChase1->Normal.y = 4.0f;
 			SkyboxScale_SkyChase1->Normal.z = 4.0f;
-			WriteData((char*)0x0062751B, 0x00, 1); //Force Tornado light type
-			WriteData((char*)0x0062AC1F, 0x00, 1); //Force Tornado light type (transformation cutscene)
+			WriteData((char*)0x0062751B, nullptr, 1); //Force Tornado light type
+			WriteData((char*)0x0062AC1F, nullptr, 1); //Force Tornado light type (transformation cutscene)
 			for (int i = 0; i < 3; i++)
 			{
 				DrawDist_SkyChase1[i].Maximum = -60000.0f;
 			}
 		}
-		if (DLLLoaded_SA1Chars == false)
+		if (!DLLLoaded_SA1Chars)
 		{
 			// Replace the non-updated Eggmobile NPC model with a high-poly one to resolve a texture issue
 			*reinterpret_cast<NJS_OBJECT *>(0x010FEF74) = *reinterpret_cast<NJS_OBJECT *>(0x02EEB524);
@@ -287,7 +287,7 @@ extern "C"
 		PlaySegaSonicTeamVoice_init();
 
 		// Fix Mystic Ruins base
-		if (DLLLoaded_DCMods == false) FixMRBase_Apply(path, helperFunctions);
+		if (!DLLLoaded_DCMods) FixMRBase_Apply(path, helperFunctions);
 
 		// Fix Egg Carrier Garden ocean animation
 		((LandTable *)0x3405E54)->Col[74].Flags = 0x84000002;
@@ -297,7 +297,7 @@ extern "C"
 		WriteJump(reinterpret_cast<void*>(0x7A81A0), FixedBubbleRipple);
 
 		// Fix Perfect Chaos damage animation
-		if (DLLLoaded_DCMods == false)
+		if (!DLLLoaded_DCMods)
 		{
 			WriteJump(reinterpret_cast<void*>(0x005632F0), Chaos7Explosion_DisplayX);
 			WriteJump(reinterpret_cast<void*>(0x005633C0), Chaos7Damage_DisplayX);
@@ -306,8 +306,8 @@ extern "C"
 	EXPORT void __cdecl OnFrame()
 	{
 		//Fix broken welds after playing as Metal Sonic
-		if (GameMode == GameModes_CharSel && MetalSonicFlag == true) MetalSonicFlag = false;
-		if (DLLLoaded_DLCs == false)
+		if (GameMode == GameModes_CharSel && static_cast<bool>(MetalSonicFlag)) MetalSonicFlag = false;
+		if (!DLLLoaded_DLCs)
 		{
 			if (CurrentLevel == 12 && CurrentAct == 0 && GameState != 16)
 			{

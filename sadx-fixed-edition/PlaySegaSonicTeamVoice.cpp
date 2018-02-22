@@ -16,13 +16,14 @@ void PlaySegaSonicTeamVoice_init()
 	std::uniform_int_distribution<int> eggman(0, 1);
 	CharacterVoice = voice(mt);
 	AlternateEggman = eggman(mt) == 1;
+
 	if (SegaVoiceLanguage == 2)
 	{
 		VoiceLanguage_sel = 0;
 		if (CharacterVoice == 5)
 		{
-			WriteData<1>((char*)0x0042CC9C, 0xFF);
-			WriteData<1>((char*)0x0042CD0E, 0xFF);
+			WriteData<1>(reinterpret_cast<char*>(0x0042CC9C), 0xFFu);
+			WriteData<1>(reinterpret_cast<char*>(0x0042CD0E), 0xFFu);
 		}
 	}
 }
