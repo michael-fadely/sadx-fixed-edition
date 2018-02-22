@@ -202,8 +202,8 @@ static void __cdecl TornadoTarget_CalculateCenterPoint_r(ObjectMaster* a1)
 	EntityData1* parent_data1 = a1->Parent->Data1;
 	NJS_VECTOR*  position     = &a1->Data1->Position;
 
-	position->x = parent_data1->Position.x - (HorizontalResolution_float * 0.5f);
-	position->y = parent_data1->Position.y - (VerticalResolution_float * 0.5f);
+	position->x = parent_data1->Position.x - _nj_screen_.cx;
+	position->y = parent_data1->Position.y - _nj_screen_.cy;
 	position->z = 1000.0f * min(VerticalStretch, HorizontalStretch);
 
 	njPushMatrix(nullptr);
