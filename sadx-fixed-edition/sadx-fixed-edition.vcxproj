@@ -57,11 +57,12 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;SADXFIXEDEDITION_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(SolutionDir)sadx-mod-loader\SADXModLoader\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)sadx-mod-loader\SADXModLoader\include;$(SolutionDir)sadx-mod-loader\mod-loader-common\ModLoaderCommon</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>$(SolutionDir)\ModLoaderCommon.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PreBuildEvent>
       <Command>xcopy /Y /D "$(ProjectDir)mod.ini" "$(OutDir)"</Command>
@@ -76,13 +77,14 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;SADXFIXEDEDITION_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(SolutionDir)sadx-mod-loader\SADXModLoader\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)sadx-mod-loader\SADXModLoader\include;$(SolutionDir)sadx-mod-loader\mod-loader-common\ModLoaderCommon</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>$(SolutionDir)\ModLoaderCommon.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PreBuildEvent>
       <Command>xcopy /Y /D "$(ProjectDir)mod.ini" "$(OutDir)"</Command>
@@ -90,14 +92,22 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="barrel.h" />
+    <ClInclude Include="HotShelterWaterfallFix.h" />
     <ClInclude Include="ItemBox.h" />
+    <ClInclude Include="MR_FinalEggFix.h" />
+    <ClInclude Include="OFinalEgg.h" />
+    <ClInclude Include="PerfectChaosFixes.h" />
     <ClInclude Include="PlaySegaSonicTeamVoice.h" />
+    <ClInclude Include="SkyChaseFixes.h" />
     <ClInclude Include="stdafx.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ItemBox.cpp" />
     <ClCompile Include="mod.cpp" />
+    <ClCompile Include="MR_FinalEggFix.cpp" />
+    <ClCompile Include="PerfectChaosFixes.cpp" />
     <ClCompile Include="PlaySegaSonicTeamVoice.cpp" />
+    <ClCompile Include="SkyChaseFixes.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>

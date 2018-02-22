@@ -4,9 +4,9 @@
 
 // TODO: Adjust for longer Japanese Big voice clips.
 
-static int CharacterVoice     = 0;
-static int VoiceLanguage_rand = 1;
-static bool AlternateEggman   = false;
+int CharacterVoice = 0;
+int VoiceLanguage_sel = 1;
+bool AlternateEggman   = false;
 
 void PlaySegaSonicTeamVoice_init()
 {
@@ -14,14 +14,17 @@ void PlaySegaSonicTeamVoice_init()
 	std::mt19937 mt(r());
 	std::uniform_int_distribution<int> voice(0, 7);
 	std::uniform_int_distribution<int> eggman(0, 1);
-
 	CharacterVoice = voice(mt);
 	AlternateEggman = eggman(mt) == 1;
-
-#ifdef ALLOW_JAPANESE
-	std::uniform_int_distribution<int> lang(0, 1);
-	VoiceLangeuage_rand = lang(mt);
-#endif
+	if (SegaVoiceLanguage == 2)
+	{
+		VoiceLanguage_sel = 0;
+		if (CharacterVoice == 5)
+		{
+			WriteData<1>((char*)0x0042CC9C, 0xFF);
+			WriteData<1>((char*)0x0042CD0E, 0xFF);
+		}
+	}
 }
 
 // SEGA, Sonic Team
@@ -59,20 +62,20 @@ static void PlaySegaSonicTeamVoice()
 	{
 		switch (SegaLogo_Mode)
 		{
-			case 1:
-				VoiceLanguage = VoiceLanguage_rand;
-				PlayVoice(GetVoiceNumber(0));
-				SoundManager_ptr->MainSub(SoundManager_ptr);
-				break;
+		case 1:
+			VoiceLanguage = VoiceLanguage_sel;
+			PlayVoice(GetVoiceNumber(0));
+			SoundManager_ptr->MainSub(SoundManager_ptr);
+			break;
 
-			case 16:
-				PlayVoice(GetVoiceNumber(1));
-				SoundManager_ptr->MainSub(SoundManager_ptr);
-				VoiceLanguage = 1;
-				break;
+		case 16:
+			PlayVoice(GetVoiceNumber(1));
+			SoundManager_ptr->MainSub(SoundManager_ptr);
+			VoiceLanguage = 1;
+			break;
 
-			default:
-				break;
+		default:
+			break;
 		}
 	}
 	else
@@ -80,6 +83,7 @@ static void PlaySegaSonicTeamVoice()
 		PrintDebug("Error initializing Sound Manager.\n");
 	}
 }
+
 
 void __declspec(naked) PlaySegaSonicTeamVoice_asm()
 {
