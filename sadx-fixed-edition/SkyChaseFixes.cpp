@@ -28,8 +28,6 @@ void SkyChaseFix_UpdateBounds()
 	VerticalResolution_float = static_cast<float>(VerticalResolution);
 	VerticalResolutionHalf_float = VerticalResolution_float / 2.0f;
 
-	WriteJump(reinterpret_cast<void*>(0x628D50), TornadoCalculateCenterPoint); // Calculate center for bullets
-
 	if (HorizontalResolution_float / VerticalResolution_float > 1.4f)
 	{
 		if (HorizontalResolution_float / VerticalResolution_float > 2.2f)
@@ -53,6 +51,8 @@ void SkyChaseFix_Init()
 	WriteData(reinterpret_cast<float**>(0x00627F4D), &tornado_speed); // Tornado Speed (always 1)
 	WriteData(reinterpret_cast<float**>(0x00627F60), &float_one);     // Horizontal limit
 	WriteData(reinterpret_cast<float**>(0x00627F72), &float_one);     // Vertical limit
+
+	WriteJump(reinterpret_cast<void*>(0x628D50), TornadoCalculateCenterPoint); // Calculate center for bullets
 
 	// Hodai fixes
 	WriteData(reinterpret_cast<float**>(0x0043854D), &HorizontalResolution_float);
