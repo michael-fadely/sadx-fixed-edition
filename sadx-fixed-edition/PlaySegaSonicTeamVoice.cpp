@@ -4,8 +4,9 @@
 
 // TODO: Adjust for longer Japanese Big voice clips.
 
+SegaVoiceLanguage_t SegaVoiceLanguage = SegaVoiceLanguage_t::English;
+
 int CharacterVoice = 0;
-int SegaVoiceLanguage = 1;
 int VoiceLanguage_sel = 1;
 bool AlternateEggman   = false;
 
@@ -18,7 +19,7 @@ void PlaySegaSonicTeamVoice_init()
 	CharacterVoice = voice(mt);
 	AlternateEggman = eggman(mt) == 1;
 
-	if (SegaVoiceLanguage == 2)
+	if (SegaVoiceLanguage == SegaVoiceLanguage_t::Japanese)
 	{
 		VoiceLanguage_sel = 0;
 		if (CharacterVoice == 5)

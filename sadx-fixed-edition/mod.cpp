@@ -113,10 +113,10 @@ extern "C"
 		// Config stuff
 		const IniFile* config = new IniFile(std::string(path) + "\\config.ini");
 
-		SegaVoiceLanguage = config->getInt("General settings", "SegaVoiceLanguage", 1);
+		SegaVoiceLanguage = static_cast<SegaVoiceLanguage_t>(config->getInt("General settings", "SegaVoiceLanguage", 1));
 
 		// SEGA/Sonic Team voice
-		if (!DLLLoaded_DLCs && SegaVoiceLanguage > 0)
+		if (!DLLLoaded_DLCs && SegaVoiceLanguage != SegaVoiceLanguage_t::Off)
 		{
 			WriteJump(reinterpret_cast<void*>(0x0042CCC7), PlaySegaSonicTeamVoice_asm);
 			WriteJump(reinterpret_cast<void*>(0x0042CD2F), PlaySegaSonicTeamVoice_asm);
