@@ -17,8 +17,8 @@ DataPointer(NJS_OBJECT, stru_8B22F4, 0x8B22F4);
 FunctionPointer(double, sub_49EAD0, (float a1, float a2, float a3, int a4), 0x49EAD0);
 FunctionPointer(float, sub_49E920, (float x, float y, float z, Rotation3 *rotation), 0x49E920);
 
-static bool DLLLoaded_DCMods = false;
-static bool DLLLoaded_DLCs = false;
+static bool DLLLoaded_DCMods   = false;
+static bool DLLLoaded_DLCs     = false;
 static bool DLLLoaded_SA1Chars = false;
 
 // Replaces: mov    camerathing,    80000004h
@@ -26,44 +26,54 @@ static bool DLLLoaded_SA1Chars = false;
 // Based on information from VeritasDL and code from SADX Steam.
 // Note that SADX Steam seems to use 0x8000000C and not 0x80000004, but it doesn't seem to make a difference.
 // Uncomment to change 0x80000004 to 0x8000000C
-static const Uint8  freecam_fix[] = { 0x81, 0x0D, /*0xA8, 0xCB, 0xB2, 0x03, 0x0C, 0x00, 0x00, 0x80*/ };
-static const Uint8  mt_kusa_nop[] = { 0x90, 0x90 };
+static const Uint8 freecam_fix[] = { 0x81, 0x0D, /*0xA8, 0xCB, 0xB2, 0x03, 0x0C, 0x00, 0x00, 0x80*/ };
+static const Uint8 mt_kusa_nop[] = { 0x90, 0x90 };
 static Uint32 CasinoSpawnY = 0xC3480001; // Secretly a float of about -200.0
 
 static float KusaDistance = 50000.0f;
 int SegaVoiceLanguage = 1;
 
-static float float_one = 1.0f;
-static float float_tornadospeed = 1.0f;
-static float float_targetsize = 1;
-static float float_reticlespeedmultiplier = 2.0f;
-float HorizontalResolution_float = 640.0f;
-float VerticalResolution_float = 480.0f;
-float VerticalResolutionHalf_float = 240.0f;
-static double SkyChaseSkyRotationMultiplier = -0.5f;
-static float SkyChaseLimit_Right = 560.0f;
-static float SkyChaseLimit_Left = 80.0f;
-static float SkyChaseLimit_Top = 400.0f;
-static float SkyChaseLimit_Bottom = 80.0f;
-static float widescreenthing = 103.0f;
+static float  float_one                        = 1.0f;
+static float  tornado_speed                    = 1.0f;
+static float  tornado_target_size              = 1;
+static float  tornado_reticle_speed_multiplier = 2.0f;
+static float  HorizontalResolution_float       = 640.0f;
+static float  VerticalResolution_float         = 480.0f;
+static float  VerticalResolutionHalf_float     = 240.0f;
+static double SkyChaseSkyRotationMultiplier    = -0.5f;
+static float  SkyChaseLimit_Right              = 560.0f;
+static float  SkyChaseLimit_Left               = 80.0f;
+static float  SkyChaseLimit_Top                = 400.0f;
+static float  SkyChaseLimit_Bottom             = 80.0f;
+static float  widescreenthing                  = 103.0f;
 
 double __cdecl AmenboFix(float a1, float a2, float a3, int a4)
 {
 	double u = sub_49EAD0(a1, a2, a3, a4);
-	if (u == -1000000) u = a2;
+
+	if (u == -1000000)
+	{
+		u = a2;
+	}
+
 	return u;
 }
 
-float __cdecl EggKeeperFix(float x, float y, float z, Rotation3 *rotation)
+float __cdecl EggKeeperFix(float x, float y, float z, Rotation3* rotation)
 {
 	float result = sub_49E920(x, y, z, rotation);
-	if (result == -1000000) result = y;
+
+	if (result == -1000000)
+	{
+		result = y;
+	}
+
 	return result;
 }
 
-void __cdecl FixedBubbleRipple(ObjectMaster *a1)
+void __cdecl FixedBubbleRipple(ObjectMaster* a1)
 {
-	auto v1 = (NJS_VECTOR *)a1->UnknownB_ptr;
+	auto v1 = static_cast<NJS_VECTOR*>(a1->UnknownB_ptr);
 	if (!MissedFrames)
 	{
 		SetTextureToCommon();
@@ -79,9 +89,9 @@ void __cdecl FixedBubbleRipple(ObjectMaster *a1)
 		njColorBlendingMode(0, NJD_COLOR_BLENDING_SRCALPHA);
 		njColorBlendingMode(NJD_DESTINATION_COLOR, NJD_COLOR_BLENDING_ONE);
 		njScale(nullptr, v1[2].z, 1.0f, v1[2].z);
-		DrawQueueDepthBias = -17952; //Copied from sub_4B9290
-		ProcessModelNode_A_WrapperB(&stru_8B22F4, (QueuedModelFlagsB)0); //Replaced DrawModel_Callback
-		DrawQueueDepthBias = 0; //Copied from sub_4B9290
+		DrawQueueDepthBias = -17952;                                     // Copied from sub_4B9290
+		ProcessModelNode_A_WrapperB(&stru_8B22F4, (QueuedModelFlagsB)0); // Replaced DrawModel_Callback
+		DrawQueueDepthBias = 0;                                          // Copied from sub_4B9290
 		ClampGlobalColorThing_Thing();
 		njColorBlendingMode(0, NJD_COLOR_BLENDING_SRCALPHA);
 		njColorBlendingMode(NJD_DESTINATION_COLOR, NJD_COLOR_BLENDING_INVSRCALPHA);
@@ -113,17 +123,18 @@ extern "C"
 	EXPORT void __cdecl Init(const char* path, const HelperFunctions& helperFunctions)
 	{
 		// Check which DLLs are loaded
-		if (GetModuleHandle(TEXT("SA1_Chars.dll")) != nullptr) DLLLoaded_SA1Chars = true;
-		if (GetModuleHandle(TEXT("DCMods_Main.dll")) != nullptr) DLLLoaded_DCMods = true;
-		if (GetModuleHandle(TEXT("DLCs_Main.dll")) != nullptr) DLLLoaded_DLCs = true;
+		DLLLoaded_SA1Chars = GetModuleHandle(TEXT("SA1_Chars.dll")) != nullptr;
+		DLLLoaded_DCMods   = GetModuleHandle(TEXT("DCMods_Main.dll")) != nullptr;
+		DLLLoaded_DLCs     = GetModuleHandle(TEXT("DLCs_Main.dll")) != nullptr;
+
 		// Config stuff
-		const IniFile *config = new IniFile(std::string(path) + "\\config.ini");
+		const IniFile* config = new IniFile(std::string(path) + "\\config.ini");
+
 		SegaVoiceLanguage = config->getInt("General settings", "SegaVoiceLanguage", 1);
 
 		// SEGA/Sonic Team voice
 		if (!DLLLoaded_DLCs && SegaVoiceLanguage > 0)
 		{
-
 			WriteJump(reinterpret_cast<void*>(0x0042CCC7), PlaySegaSonicTeamVoice_asm);
 			WriteJump(reinterpret_cast<void*>(0x0042CD2F), PlaySegaSonicTeamVoice_asm);
 		}
@@ -176,73 +187,97 @@ extern "C"
 		WriteData(reinterpret_cast<float**>(0x00608331), &KusaDistance);
 
 		// Fixes missing Sweep badniks in Emerald Coast 2 and Twinkle Park 2
-		if (!DLLLoaded_DCMods) WriteCall(reinterpret_cast<void*>(0x007AA9F9), AmenboFix);
+		if (!DLLLoaded_DCMods)
+		{
+			WriteCall(reinterpret_cast<void*>(0x007AA9F9), AmenboFix);
+		}
 
 		// Fixes a missing Egg Keeper in Final Egg 1
-		if (!DLLLoaded_DCMods) WriteCall(reinterpret_cast<void*>(0x0049EFE7), EggKeeperFix);
+		if (!DLLLoaded_DCMods)
+		{
+			WriteCall(reinterpret_cast<void*>(0x0049EFE7), EggKeeperFix);
+		}
 
 		// Sky Chase fixes
 		if (!DLLLoaded_DCMods)
 		{
 			// Resolution related fixes
-			HorizontalResolution_float = static_cast<float>(HorizontalResolution);
-			VerticalResolution_float = static_cast<float>(VerticalResolution);
+			HorizontalResolution_float   = static_cast<float>(HorizontalResolution);
+			VerticalResolution_float     = static_cast<float>(VerticalResolution);
 			VerticalResolutionHalf_float = VerticalResolution_float / 2.0f;
-			WriteJump((void*)0x628D50, TornadoCalculateCenterPoint); //Calculate center for bullets
+
+			WriteJump(reinterpret_cast<void*>(0x628D50), TornadoCalculateCenterPoint); // Calculate center for bullets
+
 			if (HorizontalResolution_float / VerticalResolution_float > 1.4f)
 			{
-				if (HorizontalResolution_float / VerticalResolution_float > 2.2f) widescreenthing = 240.0f;
-				SkyChaseLimit_Left = 80.0f + widescreenthing;
+				if (HorizontalResolution_float / VerticalResolution_float > 2.2f)
+				{
+					widescreenthing = 240.0f;
+				}
+
+				SkyChaseLimit_Left  = 80.0f + widescreenthing;
 				SkyChaseLimit_Right = 560.0f + widescreenthing;
 			}
-			WriteData((float**)0x00627F4D, &float_tornadospeed); //Tornado Speed (always 1)
-			WriteData((float**)0x00627F60, &float_one); //Horizontal limit
-			WriteData((float**)0x00627F72, &float_one); //Vertical limit
+
+			WriteData(reinterpret_cast<float**>(0x00627F4D), &tornado_speed); // Tornado Speed (always 1)
+			WriteData(reinterpret_cast<float**>(0x00627F60), &float_one);     // Horizontal limit
+			WriteData(reinterpret_cast<float**>(0x00627F72), &float_one);     // Vertical limit
+
 			// Hodai fixes
-			WriteData((float**)0x0043854D, &HorizontalResolution_float);
-			WriteData((float**)0x00438571, &VerticalResolutionHalf_float);
-			WriteData((float**)0x0043857F, &VerticalResolutionHalf_float);
-			WriteCall((void*)0x0062C764, SetSkyChaseRocketColor);
-			WriteCall((void*)0x0062C704, RenderSkyChaseRocket);
+			WriteData(reinterpret_cast<float**>(0x0043854D), &HorizontalResolution_float);
+			WriteData(reinterpret_cast<float**>(0x00438571), &VerticalResolutionHalf_float);
+			WriteData(reinterpret_cast<float**>(0x0043857F), &VerticalResolutionHalf_float);
+			WriteCall(reinterpret_cast<void*>(0x0062C764), SetSkyChaseRocketColor);
+			WriteCall(reinterpret_cast<void*>(0x0062C704), RenderSkyChaseRocket);
+
 			// Sky Chase reticle and multiplier fixes
-			float_reticlespeedmultiplier = VerticalResolution / 480.0f;
-			float_targetsize = pow(VerticalResolution / 15.0f, 2);
-			WriteData((float**)0x628AF7, &float_targetsize); //Target size
-			WriteData((float**)0x00629472, &float_reticlespeedmultiplier); //Target speed
+			tornado_reticle_speed_multiplier = VerticalResolution / 480.0f;
+			tornado_target_size = pow(VerticalResolution / 15.0f, 2);
+			WriteData(reinterpret_cast<float**>(0x628AF7), &tornado_target_size);                // Target size
+			WriteData(reinterpret_cast<float**>(0x00629472), &tornado_reticle_speed_multiplier); // Target speed
+
 			// Limits for reticle
-			WriteData((float**)0x00628994, &float_reticlespeedmultiplier); //right
-			WriteData((float**)0x006289B6, &float_reticlespeedmultiplier); //left
-			WriteData((float**)0x006289F1, &float_reticlespeedmultiplier); //top
-			WriteData((float**)0x00628A13, &float_reticlespeedmultiplier); //bottom
-			WriteData((float**)0x0062899A, &SkyChaseLimit_Right);
-			WriteData((float**)0x006289BC, &SkyChaseLimit_Left);
-			WriteData((float**)0x006289F7, &SkyChaseLimit_Top);
-			WriteData((float**)0x00628A19, &SkyChaseLimit_Bottom);
+			WriteData(reinterpret_cast<float**>(0x00628994), &tornado_reticle_speed_multiplier); // right
+			WriteData(reinterpret_cast<float**>(0x006289B6), &tornado_reticle_speed_multiplier); // left
+			WriteData(reinterpret_cast<float**>(0x006289F1), &tornado_reticle_speed_multiplier); // top
+			WriteData(reinterpret_cast<float**>(0x00628A13), &tornado_reticle_speed_multiplier); // bottom
+			WriteData(reinterpret_cast<float**>(0x0062899A), &SkyChaseLimit_Right);
+			WriteData(reinterpret_cast<float**>(0x006289BC), &SkyChaseLimit_Left);
+			WriteData(reinterpret_cast<float**>(0x006289F7), &SkyChaseLimit_Top);
+			WriteData(reinterpret_cast<float**>(0x00628A19), &SkyChaseLimit_Bottom);
+
 			// Visual stuff
-			WriteCall((void*)0x00629004, TornadoTarget_Render);
-			WriteCall((void*)0x00628FE5, TornadoTarget_Render);
-			WriteJump((void*)0x00628DB0, TornadoTargetSprite_TargetLock_DisplayX);
-			WriteData((double**)0x00627D14, &SkyChaseSkyRotationMultiplier); //Rotate the sky in the opposite direction
-			WriteData((float*)0x00628951, VerticalResolution / 480.0f); //Reticle scale X
-			WriteData((float*)0x0062895B, VerticalResolution / 480.0f); //Reticle scale Y
-			((NJS_OBJECT*)0x028DFD34)->basicdxmodel->mats[0].diffuse.color = 0xFFFFFFFF; //Sky materials in Act 1
-			((NJS_OBJECT*)0x028175F4)->basicdxmodel->mats[0].diffuse.color = 0xFFFFFFFF; //Sky materials in Act 1
-			SkyboxScale_SkyChase1->Far.x = 4.0f;
-			SkyboxScale_SkyChase1->Far.y = 4.0f;
-			SkyboxScale_SkyChase1->Far.z = 4.0f;
-			SkyboxScale_SkyChase1->Near.x = 4.0f;
-			SkyboxScale_SkyChase1->Near.y = 4.0f;
-			SkyboxScale_SkyChase1->Near.z = 4.0f;
+			WriteCall(reinterpret_cast<void*>(0x00629004), TornadoTarget_Render);
+			WriteCall(reinterpret_cast<void*>(0x00628FE5), TornadoTarget_Render);
+			WriteJump(reinterpret_cast<void*>(0x00628DB0), TornadoTargetSprite_TargetLock_DisplayX);
+			WriteData(reinterpret_cast<double**>(0x00627D14), &SkyChaseSkyRotationMultiplier);
+
+			// Rotate the sky in the opposite direction
+			WriteData(reinterpret_cast<float*>(0x00628951), VerticalResolution / 480.0f); // Reticle scale X
+			WriteData(reinterpret_cast<float*>(0x0062895B), VerticalResolution / 480.0f); // Reticle scale Y
+
+			reinterpret_cast<NJS_OBJECT*>(0x028DFD34)->basicdxmodel->mats[0].diffuse.color = 0xFFFFFFFF; // Sky materials in Act 1
+			reinterpret_cast<NJS_OBJECT*>(0x028175F4)->basicdxmodel->mats[0].diffuse.color = 0xFFFFFFFF; // Sky materials in Act 1
+
+			SkyboxScale_SkyChase1->Far.x    = 4.0f;
+			SkyboxScale_SkyChase1->Far.y    = 4.0f;
+			SkyboxScale_SkyChase1->Far.z    = 4.0f;
+			SkyboxScale_SkyChase1->Near.x   = 4.0f;
+			SkyboxScale_SkyChase1->Near.y   = 4.0f;
+			SkyboxScale_SkyChase1->Near.z   = 4.0f;
 			SkyboxScale_SkyChase1->Normal.x = 4.0f;
 			SkyboxScale_SkyChase1->Normal.y = 4.0f;
 			SkyboxScale_SkyChase1->Normal.z = 4.0f;
-			WriteData((char*)0x0062751B, nullptr, 1); //Force Tornado light type
-			WriteData((char*)0x0062AC1F, nullptr, 1); //Force Tornado light type (transformation cutscene)
+
+			WriteData(reinterpret_cast<char*>(0x0062751B), nullptr, 1); // Force Tornado light type
+			WriteData(reinterpret_cast<char*>(0x0062AC1F), nullptr, 1); // Force Tornado light type (transformation cutscene)
+
 			for (int i = 0; i < 3; i++)
 			{
 				DrawDist_SkyChase1[i].Maximum = -60000.0f;
 			}
 		}
+
 		if (!DLLLoaded_SA1Chars)
 		{
 			// Replace the non-updated Eggmobile NPC model with a high-poly one to resolve a texture issue
@@ -287,11 +322,14 @@ extern "C"
 		PlaySegaSonicTeamVoice_init();
 
 		// Fix Mystic Ruins base
-		if (!DLLLoaded_DCMods) FixMRBase_Apply(path, helperFunctions);
+		if (!DLLLoaded_DCMods)
+		{
+			FixMRBase_Apply(path, helperFunctions);
+		}
 
 		// Fix Egg Carrier Garden ocean animation
-		((LandTable *)0x3405E54)->Col[74].Flags = 0x84000002;
-		((NJS_MATERIAL*)0x033FE3F8)->diffuse.color = 0x7FB2B2B2;
+		reinterpret_cast<LandTable*>(0x3405E54)->Col[74].Flags = 0x84000002;
+		reinterpret_cast<NJS_MATERIAL*>(0x033FE3F8)->diffuse.color = 0x7FB2B2B2;
 
 		// Fix the water ripple created by air bubbles
 		WriteJump(reinterpret_cast<void*>(0x7A81A0), FixedBubbleRipple);
@@ -303,10 +341,15 @@ extern "C"
 			WriteJump(reinterpret_cast<void*>(0x005633C0), Chaos7Damage_DisplayX);
 		}
 	}
+
 	EXPORT void __cdecl OnFrame()
 	{
-		//Fix broken welds after playing as Metal Sonic
-		if (GameMode == GameModes_CharSel && static_cast<bool>(MetalSonicFlag)) MetalSonicFlag = false;
+		// Fix broken welds after playing as Metal Sonic
+		if (GameMode == GameModes_CharSel && static_cast<bool>(MetalSonicFlag))
+		{
+			MetalSonicFlag = false;
+		}
+
 		if (!DLLLoaded_DLCs)
 		{
 			if (CurrentLevel == 12 && CurrentAct == 0 && GameState != 16)
@@ -314,10 +357,12 @@ extern "C"
 				if (HotShelterWaterThing < 65.0f && HotShelterWaterThing > 0.0f)
 				{
 					WaterThing_VShift = (WaterThing_VShift - 16 * FramerateSetting) % 255;
+
 					for (int i = 0; i < 56; i++)
 					{
 						uv_014107E0[i].v = uv_014107E0_0[i].v + WaterThing_VShift;
 					}
+
 					for (int i = 0; i < 20; i++)
 					{
 						uv_01410790[i].v = uv_01410790_0[i].v + WaterThing_VShift * 2;
