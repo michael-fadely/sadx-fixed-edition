@@ -10,8 +10,6 @@
 #include "HotShelterWaterfallFix.h"
 
 DataArray(NJS_MATERIAL, matlist_022710E0, 0x026710E0, 5);
-DataArray(SkyboxScale, SkyboxScale_SkyChase1, 0x027D6CE0, 3);
-DataArray(DrawDistance, DrawDist_SkyChase1, 0x027D6D58, 3);
 DataPointer(NJS_ARGB, stru_3D0B7C8, 0x3D0B7C8);
 DataPointer(NJS_OBJECT, stru_8B22F4, 0x8B22F4);
 FunctionPointer(double, sub_49EAD0, (float a1, float a2, float a3, int a4), 0x49EAD0);
@@ -32,20 +30,6 @@ static Uint32 CasinoSpawnY = 0xC3480001; // Secretly a float of about -200.0
 
 static float KusaDistance = 50000.0f;
 int SegaVoiceLanguage = 1;
-
-static float  float_one                        = 1.0f;
-static float  tornado_speed                    = 1.0f;
-static float  tornado_target_size              = 1;
-static float  tornado_reticle_speed_multiplier = 2.0f;
-static float  HorizontalResolution_float       = 640.0f;
-static float  VerticalResolution_float         = 480.0f;
-static float  VerticalResolutionHalf_float     = 240.0f;
-static double SkyChaseSkyRotationMultiplier    = -0.5f;
-static float  SkyChaseLimit_Right              = 560.0f;
-static float  SkyChaseLimit_Left               = 80.0f;
-static float  SkyChaseLimit_Top                = 400.0f;
-static float  SkyChaseLimit_Bottom             = 80.0f;
-static float  widescreenthing                  = 103.0f;
 
 double __cdecl AmenboFix(float a1, float a2, float a3, int a4)
 {
@@ -201,81 +185,7 @@ extern "C"
 		// Sky Chase fixes
 		if (!DLLLoaded_DCMods)
 		{
-			// Resolution related fixes
-			HorizontalResolution_float   = static_cast<float>(HorizontalResolution);
-			VerticalResolution_float     = static_cast<float>(VerticalResolution);
-			VerticalResolutionHalf_float = VerticalResolution_float / 2.0f;
-
-			WriteJump(reinterpret_cast<void*>(0x628D50), TornadoCalculateCenterPoint); // Calculate center for bullets
-
-			if (HorizontalResolution_float / VerticalResolution_float > 1.4f)
-			{
-				if (HorizontalResolution_float / VerticalResolution_float > 2.2f)
-				{
-					widescreenthing = 240.0f;
-				}
-
-				SkyChaseLimit_Left  = 80.0f + widescreenthing;
-				SkyChaseLimit_Right = 560.0f + widescreenthing;
-			}
-
-			WriteData(reinterpret_cast<float**>(0x00627F4D), &tornado_speed); // Tornado Speed (always 1)
-			WriteData(reinterpret_cast<float**>(0x00627F60), &float_one);     // Horizontal limit
-			WriteData(reinterpret_cast<float**>(0x00627F72), &float_one);     // Vertical limit
-
-			// Hodai fixes
-			WriteData(reinterpret_cast<float**>(0x0043854D), &HorizontalResolution_float);
-			WriteData(reinterpret_cast<float**>(0x00438571), &VerticalResolutionHalf_float);
-			WriteData(reinterpret_cast<float**>(0x0043857F), &VerticalResolutionHalf_float);
-			WriteCall(reinterpret_cast<void*>(0x0062C764), SetSkyChaseRocketColor);
-			WriteCall(reinterpret_cast<void*>(0x0062C704), RenderSkyChaseRocket);
-
-			// Sky Chase reticle and multiplier fixes
-			tornado_reticle_speed_multiplier = VerticalResolution / 480.0f;
-			tornado_target_size = pow(VerticalResolution / 15.0f, 2);
-			WriteData(reinterpret_cast<float**>(0x628AF7), &tornado_target_size);                // Target size
-			WriteData(reinterpret_cast<float**>(0x00629472), &tornado_reticle_speed_multiplier); // Target speed
-
-			// Limits for reticle
-			WriteData(reinterpret_cast<float**>(0x00628994), &tornado_reticle_speed_multiplier); // right
-			WriteData(reinterpret_cast<float**>(0x006289B6), &tornado_reticle_speed_multiplier); // left
-			WriteData(reinterpret_cast<float**>(0x006289F1), &tornado_reticle_speed_multiplier); // top
-			WriteData(reinterpret_cast<float**>(0x00628A13), &tornado_reticle_speed_multiplier); // bottom
-			WriteData(reinterpret_cast<float**>(0x0062899A), &SkyChaseLimit_Right);
-			WriteData(reinterpret_cast<float**>(0x006289BC), &SkyChaseLimit_Left);
-			WriteData(reinterpret_cast<float**>(0x006289F7), &SkyChaseLimit_Top);
-			WriteData(reinterpret_cast<float**>(0x00628A19), &SkyChaseLimit_Bottom);
-
-			// Visual stuff
-			WriteCall(reinterpret_cast<void*>(0x00629004), TornadoTarget_Render);
-			WriteCall(reinterpret_cast<void*>(0x00628FE5), TornadoTarget_Render);
-			WriteJump(reinterpret_cast<void*>(0x00628DB0), TornadoTargetSprite_TargetLock_DisplayX);
-			WriteData(reinterpret_cast<double**>(0x00627D14), &SkyChaseSkyRotationMultiplier);
-
-			// Rotate the sky in the opposite direction
-			WriteData(reinterpret_cast<float*>(0x00628951), VerticalResolution / 480.0f); // Reticle scale X
-			WriteData(reinterpret_cast<float*>(0x0062895B), VerticalResolution / 480.0f); // Reticle scale Y
-
-			reinterpret_cast<NJS_OBJECT*>(0x028DFD34)->basicdxmodel->mats[0].diffuse.color = 0xFFFFFFFF; // Sky materials in Act 1
-			reinterpret_cast<NJS_OBJECT*>(0x028175F4)->basicdxmodel->mats[0].diffuse.color = 0xFFFFFFFF; // Sky materials in Act 1
-
-			SkyboxScale_SkyChase1->Far.x    = 4.0f;
-			SkyboxScale_SkyChase1->Far.y    = 4.0f;
-			SkyboxScale_SkyChase1->Far.z    = 4.0f;
-			SkyboxScale_SkyChase1->Near.x   = 4.0f;
-			SkyboxScale_SkyChase1->Near.y   = 4.0f;
-			SkyboxScale_SkyChase1->Near.z   = 4.0f;
-			SkyboxScale_SkyChase1->Normal.x = 4.0f;
-			SkyboxScale_SkyChase1->Normal.y = 4.0f;
-			SkyboxScale_SkyChase1->Normal.z = 4.0f;
-
-			WriteData(reinterpret_cast<char*>(0x0062751B), nullptr, 1); // Force Tornado light type
-			WriteData(reinterpret_cast<char*>(0x0062AC1F), nullptr, 1); // Force Tornado light type (transformation cutscene)
-
-			for (int i = 0; i < 3; i++)
-			{
-				DrawDist_SkyChase1[i].Maximum = -60000.0f;
-			}
+			SkyChaseFix_Init();
 		}
 
 		if (!DLLLoaded_SA1Chars)
@@ -340,6 +250,11 @@ extern "C"
 			WriteJump(reinterpret_cast<void*>(0x005632F0), Chaos7Explosion_DisplayX);
 			WriteJump(reinterpret_cast<void*>(0x005633C0), Chaos7Damage_DisplayX);
 		}
+	}
+
+	EXPORT void __cdecl OnRenderDeviceReset()
+	{
+		SkyChaseFix_UpdateBounds();
 	}
 
 	EXPORT void __cdecl OnFrame()

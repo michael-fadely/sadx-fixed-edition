@@ -12,5 +12,3 @@
 extern int SegaVoiceLanguage;
 extern int VoiceLanguage_sel;
 extern bool AlternateEggman;
-extern float HorizontalResolution_float;
-extern float VerticalResolution_float;
