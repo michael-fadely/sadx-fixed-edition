@@ -29,7 +29,6 @@ static const Uint8 mt_kusa_nop[] = { 0x90, 0x90 };
 static Uint32 CasinoSpawnY = 0xC3480001; // Secretly a float of about -200.0
 
 static float KusaDistance = 50000.0f;
-int SegaVoiceLanguage = 1;
 
 double __cdecl AmenboFix(float a1, float a2, float a3, int a4)
 {

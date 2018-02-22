@@ -5,6 +5,7 @@
 // TODO: Adjust for longer Japanese Big voice clips.
 
 int CharacterVoice = 0;
+int SegaVoiceLanguage = 1;
 int VoiceLanguage_sel = 1;
 bool AlternateEggman   = false;
 
