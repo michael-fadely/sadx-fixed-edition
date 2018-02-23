@@ -36,7 +36,7 @@ T clamp(T value, T low, T high)
 }
 
 static void TornadoTarget_MoveTargetWithinBounds_asm();
-static void __cdecl TornadoTargetSprite_TargetLock_DisplayX(ObjectMaster *a1);
+static void __cdecl TornadoTargetSprite_TargetLock_Display_r(ObjectMaster *a1);
 static void TornadoTarget_Render(NJS_SPRITE *sp, Int n, Float pri, NJD_SPRITE attr, QueuedModelFlagsB queue_flags);
 static void RenderSkyChaseRocket(NJS_POINT3COL *a1, int texnum, NJD_DRAW n, QueuedModelFlagsB a4);
 static void SetSkyChaseRocketColor(float a, float r, float g, float b);
@@ -84,7 +84,7 @@ void SkyChaseFix_Init()
 	// Visual stuff
 	WriteCall(reinterpret_cast<void*>(0x00629004), TornadoTarget_Render);
 	WriteCall(reinterpret_cast<void*>(0x00628FE5), TornadoTarget_Render);
-	WriteJump(reinterpret_cast<void*>(0x00628DB0), TornadoTargetSprite_TargetLock_DisplayX);
+	WriteJump(reinterpret_cast<void*>(0x00628DB0), TornadoTargetSprite_TargetLock_Display_r);
 	WriteData(reinterpret_cast<double**>(0x00627D14), &SkyChaseSkyRotationMultiplier);
 
 	reinterpret_cast<NJS_OBJECT*>(0x028DFD34)->basicdxmodel->mats[0].diffuse.color = 0xFFFFFFFF; // Sky materials in Act 1
@@ -113,20 +113,20 @@ static void __cdecl TornadoTarget_MoveTargetWithinBounds_r(ObjectMaster *a1)
 {
 	EntityData1* data1 = a1->Data1;
 
-	auto m = min(VerticalStretch, HorizontalStretch);
-	float move_speed = m * hack_flt;
+	const float m = min(VerticalStretch, HorizontalStretch);
+	const float move_speed = m * hack_flt;
 
 	// 640x480 - 160x160 margin
-	auto w = 480.0f * m;
-	auto h = 320.0f * m;
+	const auto w = 480.0f * m;
+	const auto h = 320.0f * m;
 
 	float x = (static_cast<float>(static_cast<int>(Controllers[0].LeftStickX) << 8) * move_speed) + data1->Position.x;
 	float y = (static_cast<float>(static_cast<int>(Controllers[0].LeftStickY) << 8) * move_speed) + data1->Position.y;
 
-	auto left   = (HorizontalResolution_float - w) / 2.0f;
-	auto top    = (VerticalResolution_float - h) / 2.0f;
-	auto right  = left + w;
-	auto bottom = top + h;
+	const float left   = (HorizontalResolution_float - w) / 2.0f;
+	const float top    = (VerticalResolution_float - h) / 2.0f;
+	const float right  = left + w;
+	const float bottom = top + h;
 
 	x = clamp(x, left, right);
 	y = clamp(y, top, bottom);
@@ -146,7 +146,7 @@ static void __declspec(naked) TornadoTarget_MoveTargetWithinBounds_asm()
 	}
 }
 
-static void __cdecl TornadoTargetSprite_TargetLock_DisplayX(ObjectMaster* a1)
+static void __cdecl TornadoTargetSprite_TargetLock_Display_r(ObjectMaster* a1)
 {
 	NJS_POINT2 position; // [esp+4h] [ebp-8h]
 
@@ -161,7 +161,7 @@ static void __cdecl TornadoTargetSprite_TargetLock_DisplayX(ObjectMaster* a1)
 		njSetTexture(&TARGET_TEXLIST);
 		njProjectScreen(nullptr, &v1->Position, &position);
 		*reinterpret_cast<NJS_POINT2*>(&TornadoTarget_SPRITE.p) = position;
-		TornadoTarget_SPRITE.sy = v1->Scale.y * (VerticalResolution / 480.0f);
+		TornadoTarget_SPRITE.sy = v1->Scale.y * min(VerticalStretch, HorizontalStretch);
 		njTextureShadingMode(1);
 
 		if (GameState != 16)
