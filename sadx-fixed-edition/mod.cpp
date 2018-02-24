@@ -165,6 +165,8 @@ extern "C"
 		// Leon fix
 		WriteData(reinterpret_cast<float**>(0x004CD75A), &_nj_screen_.w);
 		WriteData(reinterpret_cast<float**>(0x004CD77C), &_nj_screen_.h);
+		// Fixes Leon attacking
+		WriteData(reinterpret_cast<char*>(0x004A6B88 + 4), 15i8);
 
 		// Makes the animated MtKusa model show up at larger distances
 		WriteData(reinterpret_cast<float**>(0x00608331), &KusaDistance);
