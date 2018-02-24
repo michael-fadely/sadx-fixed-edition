@@ -12,8 +12,8 @@
 DataArray(NJS_MATERIAL, matlist_022710E0, 0x026710E0, 5);
 DataPointer(NJS_ARGB, stru_3D0B7C8, 0x3D0B7C8);
 DataPointer(NJS_OBJECT, stru_8B22F4, 0x8B22F4);
-FunctionPointer(double, sub_49EAD0, (float a1, float a2, float a3, int a4), 0x49EAD0);
-FunctionPointer(float, sub_49E920, (float x, float y, float z, Rotation3 *rotation), 0x49E920);
+FunctionPointer(float, sub_49EAD0, (float x, float y, float z, Rotation3* rotation), 0x49EAD0);
+FunctionPointer(float, sub_49E920, (float x, float y, float z, Rotation3* rotation), 0x49E920);
 
 static bool DLLLoaded_DCMods   = false;
 static bool DLLLoaded_DLCs     = false;
@@ -24,29 +24,29 @@ static bool DLLLoaded_SA1Chars = false;
 // Based on information from VeritasDL and code from SADX Steam.
 // Note that SADX Steam seems to use 0x8000000C and not 0x80000004, but it doesn't seem to make a difference.
 // Uncomment to change 0x80000004 to 0x8000000C
-static const Uint8 freecam_fix[] = { 0x81, 0x0D, /*0xA8, 0xCB, 0xB2, 0x03, 0x0C, 0x00, 0x00, 0x80*/ };
-static const Uint8 mt_kusa_nop[] = { 0x90, 0x90 };
-static Uint32 CasinoSpawnY = 0xC3480001; // Secretly a float of about -200.0
+static const Uint8 FREECAM_FIX[] = { 0x81, 0x0D, /*0xA8, 0xCB, 0xB2, 0x03, 0x0C, 0x00, 0x00, 0x80*/ };
+static const Uint8 MT_KUSA_NOP[] = { 0x90, 0x90 };
+static const Uint32 CASINO_SPAWN_Y = 0xC3480001; // Secretly a float of about -200.0
 
-static float KusaDistance = 50000.0f;
+static const float KUSA_DISTANCE = 50000.0f;
 
-double __cdecl AmenboFix(float a1, float a2, float a3, int a4)
+float __cdecl AmenboFix(float x, float y, float z, Rotation3* rotation)
 {
-	double u = sub_49EAD0(a1, a2, a3, a4);
+	float result = sub_49EAD0(x, y, z, rotation);
 
-	if (u == -1000000)
+	if (result == -1000000.0f)
 	{
-		u = a2;
+		result = y;
 	}
 
-	return u;
+	return result;
 }
 
 float __cdecl EggKeeperFix(float x, float y, float z, Rotation3* rotation)
 {
 	float result = sub_49E920(x, y, z, rotation);
 
-	if (result == -1000000)
+	if (result == -1000000.0f)
 	{
 		result = y;
 	}
@@ -89,13 +89,13 @@ void __cdecl FixedBubbleRipple(ObjectMaster* a1)
 
 static PatchInfo patches[] = {
 	// MT_KUSA. Also found at 0x0082F216 in SADX 2010
-	{ reinterpret_cast<void*>(0x00608380 + 0x1D), _arrayptrandlength(mt_kusa_nop) },
+	{ reinterpret_cast<void*>(0x00608380 + 0x1D), _arrayptrandlength(MT_KUSA_NOP) },
 	// Action stage load and restart
-	{ reinterpret_cast<void*>(0x00438330), _arrayptrandlength(freecam_fix) },
+	{ reinterpret_cast<void*>(0x00438330), _arrayptrandlength(FREECAM_FIX) },
 	// Adventure field scene change
-	{ reinterpret_cast<void*>(0x00434870), _arrayptrandlength(freecam_fix) },
+	{ reinterpret_cast<void*>(0x00434870), _arrayptrandlength(FREECAM_FIX) },
 	// Casinopolis spawn point Y offset fix
-	{ reinterpret_cast<void*>(0x005C0D5D), &CasinoSpawnY, sizeof(float) }
+	{ reinterpret_cast<void*>(0x005C0D5D), &CASINO_SPAWN_Y, sizeof(float) }
 };
 
 extern "C"
@@ -148,8 +148,8 @@ extern "C"
 		obj->ang[2] = 0;
 
 		// Fixes the inverted water in Emerald Coast 2.
-		auto ec2mesh = reinterpret_cast<LandTable*>(0x01039E9C);
-		obj = ec2mesh->Col[1].Model;
+		auto ec2_mesh = reinterpret_cast<LandTable*>(0x01039E9C);
+		obj = ec2_mesh->Col[1].Model;
 
 		obj->ang[0] = 32768;
 		obj->pos[1] = -3.0f;
@@ -169,7 +169,7 @@ extern "C"
 		WriteData(reinterpret_cast<char*>(0x004A6B88 + 4), 15i8);
 
 		// Makes the animated MtKusa model show up at larger distances
-		WriteData(reinterpret_cast<float**>(0x00608331), &KusaDistance);
+		WriteData(reinterpret_cast<const float**>(0x00608331), &KUSA_DISTANCE);
 
 		// Fixes missing Sweep badniks in Emerald Coast 2 and Twinkle Park 2
 		if (!DLLLoaded_DCMods)
