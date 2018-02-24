@@ -111,9 +111,8 @@ extern "C"
 		DLLLoaded_DLCs     = GetModuleHandle(TEXT("DLCs_Main.dll")) != nullptr;
 
 		// Config stuff
-		const IniFile* config = new IniFile(std::string(path) + "\\config.ini");
-
-		SegaVoiceLanguage = static_cast<SegaVoiceLanguage_t>(config->getInt("General settings", "SegaVoiceLanguage", 1));
+		IniFile config(std::string(path) + "\\config.ini");
+		SegaVoiceLanguage = static_cast<SegaVoiceLanguage_t>(config.getInt("General settings", "SegaVoiceLanguage", 1));
 
 		// SEGA/Sonic Team voice
 		if (!DLLLoaded_DLCs && SegaVoiceLanguage != SegaVoiceLanguage_t::Off)
