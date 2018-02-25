@@ -66,7 +66,8 @@
       <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PreBuildEvent>
-      <Command>xcopy /Y /D "$(ProjectDir)mod.ini" "$(OutDir)"</Command>
+      <Command>xcopy /Y /D "$(ProjectDir)mod.ini" "$(OutDir)"
+xcopy /Y /D "$(ProjectDir)configschema.xml" "$(OutDir)"</Command>
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -89,7 +90,8 @@
       <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PreBuildEvent>
-      <Command>xcopy /Y /D "$(ProjectDir)mod.ini" "$(OutDir)"</Command>
+      <Command>xcopy /Y /D "$(ProjectDir)mod.ini" "$(OutDir)"
+xcopy /Y /D "$(ProjectDir)configschema.xml" "$(OutDir)"</Command>
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -121,6 +123,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="mod.ini" />
+  </ItemGroup>
+  <ItemGroup>
+    <Xml Include="configschema.xml" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
