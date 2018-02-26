@@ -16,6 +16,9 @@
     <Filter Include="mod-loader-common">
       <UniqueIdentifier>{b856dcfe-6c80-4efa-a420-b0a11d17a25c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="libmodutils">
+      <UniqueIdentifier>{195f6f50-6683-4783-9972-5958aa6904fc}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -51,6 +54,9 @@
     <ClInclude Include="..\sadx-mod-loader\mod-loader-common\ModLoaderCommon\TextConv.hpp">
       <Filter>mod-loader-common</Filter>
     </ClInclude>
+    <ClInclude Include="..\sadx-mod-loader\libmodutils\Trampoline.h">
+      <Filter>libmodutils</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -79,6 +85,9 @@
     </ClCompile>
     <ClCompile Include="..\sadx-mod-loader\mod-loader-common\ModLoaderCommon\TextConv.cpp">
       <Filter>mod-loader-common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sadx-mod-loader\libmodutils\Trampoline.cpp">
+      <Filter>libmodutils</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

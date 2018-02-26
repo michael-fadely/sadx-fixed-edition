@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include <SADXModLoader.h>
 #include <IniFile.hpp>
+#include <Trampoline.h>
 #include "ItemBox.h"
 #include "PlaySegaSonicTeamVoice.h"
 #include "barrel.h"
@@ -81,6 +82,17 @@ void __cdecl FixedBubbleRipple(ObjectMaster* a1)
 		RestoreConstantAttr();
 		njPopMatrix(1u);
 	}
+}
+
+static void __cdecl CharSel_LoadA_r();
+static Trampoline CharSel_LoadA_t(0x00512BC0, 0x00512BC6, CharSel_LoadA_r);
+static void __cdecl CharSel_LoadA_r()
+{
+	auto original = reinterpret_cast<decltype(CharSel_LoadA_r)*>(CharSel_LoadA_t.Target());
+
+	// Fix broken welds after playing as Metal Sonic
+	MetalSonicFlag = 0;
+	original();
 }
 
 // Because ain't nobody got time for compiler warnings
@@ -262,12 +274,6 @@ extern "C"
 
 	EXPORT void __cdecl OnFrame()
 	{
-		// Fix broken welds after playing as Metal Sonic
-		if (GameMode == GameModes_CharSel && static_cast<bool>(MetalSonicFlag))
-		{
-			MetalSonicFlag = false;
-		}
-
 		if (!DLLLoaded_DCMods)
 		{
 			if (CurrentLevel == 12 && CurrentAct == 0 && GameState != 16)
