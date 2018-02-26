@@ -268,7 +268,7 @@ extern "C"
 			MetalSonicFlag = false;
 		}
 
-		if (!DLLLoaded_DLCs)
+		if (!DLLLoaded_DCMods)
 		{
 			if (CurrentLevel == 12 && CurrentAct == 0 && GameState != 16)
 			{
