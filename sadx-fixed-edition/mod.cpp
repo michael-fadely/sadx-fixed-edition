@@ -95,6 +95,34 @@ static void __cdecl CharSel_LoadA_r()
 	original();
 }
 
+void HotShelterWaterfallFix()
+{
+	if (DLLLoaded_DCMods)
+	{
+		return;
+	}
+
+	if (CurrentLevel != 12 || CurrentAct != 0 || GameState == 16)
+	{
+		return;
+	}
+
+	if (HotShelterWaterThing < 65.0f && HotShelterWaterThing > 0.0f)
+	{
+		WaterThing_VShift = (WaterThing_VShift - 16 * FramerateSetting) % 255;
+
+		for (int i = 0; i < 56; i++)
+		{
+			uv_014107E0[i].v = uv_014107E0_0[i].v + WaterThing_VShift;
+		}
+
+		for (int i = 0; i < 20; i++)
+		{
+			uv_01410790[i].v = uv_01410790_0[i].v + WaterThing_VShift * 2;
+		}
+	}
+}
+
 // Because ain't nobody got time for compiler warnings
 #define _arrayptrandlength(data) data, (int)LengthOfArray(data)
 #define _arraylengthandptr(data) (int)LengthOfArray(data), data
@@ -274,25 +302,6 @@ extern "C"
 
 	EXPORT void __cdecl OnFrame()
 	{
-		if (!DLLLoaded_DCMods)
-		{
-			if (CurrentLevel == 12 && CurrentAct == 0 && GameState != 16)
-			{
-				if (HotShelterWaterThing < 65.0f && HotShelterWaterThing > 0.0f)
-				{
-					WaterThing_VShift = (WaterThing_VShift - 16 * FramerateSetting) % 255;
-
-					for (int i = 0; i < 56; i++)
-					{
-						uv_014107E0[i].v = uv_014107E0_0[i].v + WaterThing_VShift;
-					}
-
-					for (int i = 0; i < 20; i++)
-					{
-						uv_01410790[i].v = uv_01410790_0[i].v + WaterThing_VShift * 2;
-					}
-				}
-			}
-		}
+		HotShelterWaterfallFix();
 	}
 }
