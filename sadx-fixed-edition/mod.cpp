@@ -5,7 +5,6 @@
 #include "ItemBox.h"
 #include "PlaySegaSonicTeamVoice.h"
 #include "barrel.h"
-#include "SkyChaseFixes.h"
 #include "MR_FinalEggFix.h"
 #include "PerfectChaosFixes.h"
 #include "HotShelterWaterfallFix.h"
@@ -222,12 +221,6 @@ extern "C"
 			WriteCall(reinterpret_cast<void*>(0x0049EFE7), EggKeeperFix);
 		}
 
-		// Sky Chase fixes
-		if (!DLLLoaded_DCMods)
-		{
-			SkyChaseFix_Init();
-		}
-
 		if (!DLLLoaded_SA1Chars)
 		{
 			// Replace the non-updated Eggmobile NPC model with a high-poly one to resolve a texture issue
@@ -289,14 +282,6 @@ extern "C"
 		{
 			WriteJump(reinterpret_cast<void*>(0x005632F0), Chaos7Explosion_DisplayX);
 			WriteJump(reinterpret_cast<void*>(0x005633C0), Chaos7Damage_DisplayX);
-		}
-	}
-
-	EXPORT void __cdecl OnRenderDeviceReset()
-	{
-		if (!DLLLoaded_DCMods)
-		{
-			SkyChaseFix_UpdateBounds();
 		}
 	}
 

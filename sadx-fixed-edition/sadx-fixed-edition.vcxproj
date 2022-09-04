@@ -105,7 +105,6 @@ xcopy /Y /D "$(ProjectDir)configschema.xml" "$(OutDir)"</Command>
     <ClInclude Include="OFinalEgg.h" />
     <ClInclude Include="PerfectChaosFixes.h" />
     <ClInclude Include="PlaySegaSonicTeamVoice.h" />
-    <ClInclude Include="SkyChaseFixes.h" />
     <ClInclude Include="stdafx.h" />
   </ItemGroup>
   <ItemGroup>
@@ -117,7 +116,6 @@ xcopy /Y /D "$(ProjectDir)configschema.xml" "$(OutDir)"</Command>
     <ClCompile Include="MR_FinalEggFix.cpp" />
     <ClCompile Include="PerfectChaosFixes.cpp" />
     <ClCompile Include="PlaySegaSonicTeamVoice.cpp" />
-    <ClCompile Include="SkyChaseFixes.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>

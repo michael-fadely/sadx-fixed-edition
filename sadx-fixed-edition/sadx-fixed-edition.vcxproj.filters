@@ -33,9 +33,6 @@
     <ClInclude Include="barrel.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="SkyChaseFixes.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="OFinalEgg.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -69,9 +66,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="ItemBox.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="SkyChaseFixes.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="MR_FinalEggFix.cpp">
