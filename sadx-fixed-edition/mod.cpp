@@ -7,15 +7,9 @@
 #include "barrel.h"
 #include "MR_FinalEggFix.h"
 #include "PerfectChaosFixes.h"
-#include "HotShelterWaterfallFix.h"
 
-DataArray(NJS_MATERIAL, matlist_022710E0, 0x026710E0, 5);
-DataPointer(NJS_ARGB, stru_3D0B7C8, 0x3D0B7C8);
-DataPointer(NJS_OBJECT, stru_8B22F4, 0x8B22F4);
 DataArray(NJS_TEX, vuvS_2_boom_boomtaru_boomtaru, 0x279C710, 102);
 DataArray(NJS_VECTOR, point_boom_boomtaru_boomtaru, 0x279C9A8, 102);
-FunctionPointer(float, sub_49EAD0, (float x, float y, float z, Rotation3* rotation), 0x49EAD0);
-FunctionPointer(float, sub_49E920, (float x, float y, float z, Rotation3* rotation), 0x49E920);
 
 static bool DLLLoaded_DCMods   = false;
 static bool DLLLoaded_DLCs     = false;
@@ -32,57 +26,36 @@ static const Uint32 CASINO_SPAWN_Y = 0xC3480001; // Secretly a float of about -2
 
 static const float KUSA_DISTANCE = 50000.0f;
 
-float __cdecl AmenboFix(float x, float y, float z, Rotation3* rotation)
+// Trampoline to make badniks stay when it fails to find the ground - only used by the Sweep badnik
+static Trampoline* GetShadowPosOnWater_t = nullptr;
+static float __cdecl GetShadowPosOnWater_r(float x, float y, float z, Rotation3* rotation)
 {
-	float result = sub_49EAD0(x, y, z, rotation);
-
+	const auto original = TARGET_DYNAMIC(GetShadowPosOnWater);
+	float result = original(x, y, z, rotation);
 	if (result == -1000000.0f)
 	{
 		result = y;
 	}
-
 	return result;
 }
 
-float __cdecl EggKeeperFix(float x, float y, float z, Rotation3* rotation)
+// Calls GetShadowPos and corrects the return value to make badniks stay when it fails to find the ground
+float GetShadowPos_r(float x, float y, float z, Angle3* rotation)
 {
-	float result = sub_49E920(x, y, z, rotation);
-
+	float result = GetShadowPos(x, y, z, rotation);
 	if (result == -1000000.0f)
 	{
 		result = y;
 	}
-
 	return result;
 }
 
-void __cdecl FixedBubbleRipple(ObjectMaster* a1)
+// Hook to draw the bubble version of the ripple with depth
+void RippleHack_Bubble(NJS_OBJECT* a1)
 {
-	auto v1 = static_cast<NJS_VECTOR*>(a1->UnknownB_ptr);
-	if (!MissedFrames)
-	{
-		SetTextureToCommon();
-		njPushMatrix(nullptr);
-		njTranslateV(nullptr, v1);
-		BackupConstantAttr();
-		AddConstantAttr(0, NJD_FLAG_USE_ALPHA);
-		float v2 = v1[1].z;
-		stru_3D0B7C8.g = v1[1].z;
-		stru_3D0B7C8.b = v2;
-		stru_3D0B7C8.a = v2;
-		SetMaterialAndSpriteColor(&stru_3D0B7C8);
-		njColorBlendingMode(0, NJD_COLOR_BLENDING_SRCALPHA);
-		njColorBlendingMode(NJD_DESTINATION_COLOR, NJD_COLOR_BLENDING_ONE);
-		njScale(nullptr, v1[2].z, 1.0f, v1[2].z);
-		DrawQueueDepthBias = -17952;                                     // Copied from sub_4B9290
-		ProcessModelNode_A_WrapperB(&stru_8B22F4, (QueuedModelFlagsB)0); // Replaced DrawModel_Callback
-		DrawQueueDepthBias = 0;                                          // Copied from sub_4B9290
-		ClampGlobalColorThing_Thing();
-		njColorBlendingMode(0, NJD_COLOR_BLENDING_SRCALPHA);
-		njColorBlendingMode(NJD_DESTINATION_COLOR, NJD_COLOR_BLENDING_INVSRCALPHA);
-		RestoreConstantAttr();
-		njPopMatrix(1u);
-	}
+	late_z_ofs___ = -17952.0f;
+	late_DrawObjectClip(a1, LATE_MAT, 2.0f);
+	late_z_ofs___ = 0.0f;
 }
 
 static void __cdecl CharSel_LoadA_r();
@@ -108,20 +81,6 @@ void HotShelterWaterfallFix()
 		return;
 	}
 
-	if (HotShelterWaterThing < 65.0f && HotShelterWaterThing > 0.0f)
-	{
-		WaterThing_VShift = (WaterThing_VShift - 16 * FramerateSetting) % 255;
-
-		for (int i = 0; i < 56; i++)
-		{
-			uv_014107E0[i].v = uv_014107E0_0[i].v + WaterThing_VShift;
-		}
-
-		for (int i = 0; i < 20; i++)
-		{
-			uv_01410790[i].v = uv_01410790_0[i].v + WaterThing_VShift * 2;
-		}
-	}
 }
 
 // Because ain't nobody got time for compiler warnings
@@ -200,7 +159,7 @@ extern "C"
 		reinterpret_cast<NJS_MATERIAL*>(0x038CA220)[0].attrflags &= ~NJD_FLAG_CLAMP_MASK;
 
 		// Fixes a rendering issue with the red moving platform in Speed Highway.
-		matlist_022710E0[0].attrflags &= ~NJD_FLAG_USE_ALPHA;
+		((NJS_MATERIAL*)0x026710E0)->attrflags &= ~NJD_FLAG_USE_ALPHA;
 
 		// Leon fix
 		WriteData(reinterpret_cast<float**>(0x004CD75A), &_nj_screen_.w);
@@ -211,16 +170,13 @@ extern "C"
 		// Makes the animated MtKusa model show up at larger distances
 		WriteData(reinterpret_cast<const float**>(0x00608331), &KUSA_DISTANCE);
 
-		// Fixes missing Sweep badniks in Emerald Coast 2 and Twinkle Park 2
+		// Fixes Sweeps and other badniks not spawning
 		if (!DLLLoaded_DCMods)
 		{
-			WriteCall(reinterpret_cast<void*>(0x007AA9F9), AmenboFix);
-		}
-
-		// Fixes a missing Egg Keeper in Final Egg 1
-		if (!DLLLoaded_DCMods)
-		{
-			WriteCall(reinterpret_cast<void*>(0x0049EFE7), EggKeeperFix);
+			WriteCall(reinterpret_cast<void*>(0x0049EFE7), GetShadowPos_r); // Egg Keeper
+			WriteCall(reinterpret_cast<void*>(0x007A05EF), GetShadowPos_r); // Rhinotank
+			WriteCall(reinterpret_cast<void*>(0x004C9012), GetShadowPos_r); // Snowman
+			GetShadowPosOnWater_t = new Trampoline(0x0049EAD0, 0x0049EAD7, GetShadowPosOnWater_r); // Sweep
 		}
 
 		if (!DLLLoaded_SA1Chars)
@@ -281,7 +237,7 @@ extern "C"
 		reinterpret_cast<NJS_MATERIAL*>(0x033FE3F8)->diffuse.color = 0x7FB2B2B2;
 
 		// Fix the water ripple created by air bubbles
-		WriteJump(reinterpret_cast<void*>(0x7A81A0), FixedBubbleRipple);
+		WriteCall(reinterpret_cast<void*>(0x007A822B), RippleHack_Bubble);
 
 		// Fix Perfect Chaos damage animation
 		if (!DLLLoaded_DCMods)
