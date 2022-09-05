@@ -12,6 +12,8 @@
 DataArray(NJS_MATERIAL, matlist_022710E0, 0x026710E0, 5);
 DataPointer(NJS_ARGB, stru_3D0B7C8, 0x3D0B7C8);
 DataPointer(NJS_OBJECT, stru_8B22F4, 0x8B22F4);
+DataArray(NJS_TEX, vuvS_2_boom_boomtaru_boomtaru, 0x279C710, 102);
+DataArray(NJS_VECTOR, point_boom_boomtaru_boomtaru, 0x279C9A8, 102);
 FunctionPointer(float, sub_49EAD0, (float x, float y, float z, Rotation3* rotation), 0x49EAD0);
 FunctionPointer(float, sub_49E920, (float x, float y, float z, Rotation3* rotation), 0x49E920);
 
@@ -243,6 +245,12 @@ extern "C"
 		// Zero holding Amy lighting fix
 		reinterpret_cast<NJS_OBJECT*>(0x31A4DFC)->basicdxmodel->mats[11].attrflags &= ~NJD_FLAG_IGNORE_LIGHT;
 
+		// Twinkle Park barrel fix
+		for (int i = 0; i < 102; i++)
+			vuvS_2_boom_boomtaru_boomtaru[i].u = 255 - vuvS_2_boom_boomtaru_boomtaru[i].u;
+		for (int v = 27; v < 90; v++)
+			point_boom_boomtaru_boomtaru[v] = BarrelReplacementVertices[v - 27];
+
 		// Eggman model lighting fix
 		reinterpret_cast<NJS_OBJECT*>(0x008961E0)->basicdxmodel->mats[0].attrflags &= ~NJD_FLAG_USE_ALPHA;
 		reinterpret_cast<NJS_OBJECT*>(0x008964CC)->basicdxmodel->mats[0].attrflags &= ~NJD_FLAG_USE_ALPHA;
@@ -259,8 +267,6 @@ extern "C"
 		reinterpret_cast<NJS_OBJECT*>(0x008CE058)->basicdxmodel->mats[0].attrflags &= ~NJD_FLAG_USE_ALPHA;
 		reinterpret_cast<NJS_OBJECT*>(0x008CC658)->basicdxmodel->mats[0].attrflags &= ~NJD_FLAG_USE_ALPHA;
 
-		// Twinkle Park barrel model (requires a different "boo" texture in OBJ_TWINKLE!)
-		*reinterpret_cast<NJS_OBJECT*>(0x0279D364) = object_000A0E58;
 
 		PlaySegaSonicTeamVoice_init();
 
