@@ -69,24 +69,6 @@ static void __cdecl CharSel_LoadA_r()
 	original();
 }
 
-void HotShelterWaterfallFix()
-{
-	if (DLLLoaded_DCMods)
-	{
-		return;
-	}
-
-	if (CurrentLevel != 12 || CurrentAct != 0 || GameState == 16)
-	{
-		return;
-	}
-
-}
-
-// Because ain't nobody got time for compiler warnings
-#define _arrayptrandlength(data) data, (int)LengthOfArray(data)
-#define _arraylengthandptr(data) (int)LengthOfArray(data), data
-
 static PatchInfo patches[] = {
 	// MT_KUSA. Also found at 0x0082F216 in SADX 2010
 	{ reinterpret_cast<void*>(0x00608380 + 0x1D), _arrayptrandlength(MT_KUSA_NOP) },
@@ -242,13 +224,8 @@ extern "C"
 		// Fix Perfect Chaos damage animation
 		if (!DLLLoaded_DCMods)
 		{
-			WriteJump(reinterpret_cast<void*>(0x005632F0), Chaos7Explosion_DisplayX);
-			WriteJump(reinterpret_cast<void*>(0x005633C0), Chaos7Damage_DisplayX);
+			PerfectChaosDamageFix_Init();
 		}
 	}
 
-	EXPORT void __cdecl OnFrame()
-	{
-		HotShelterWaterfallFix();
-	}
 }
