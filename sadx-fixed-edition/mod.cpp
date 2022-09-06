@@ -7,9 +7,7 @@
 #include "barrel.h"
 #include "MR_FinalEggFix.h"
 #include "PerfectChaosFixes.h"
-
-DataArray(NJS_TEX, vuvS_2_boom_boomtaru_boomtaru, 0x279C710, 102);
-DataArray(NJS_VECTOR, point_boom_boomtaru_boomtaru, 0x279C9A8, 102);
+#include "HotShelterWaterfallFix.h"
 
 static bool DLLLoaded_DCMods   = false;
 static bool DLLLoaded_DLCs     = false;
@@ -143,6 +141,16 @@ extern "C"
 		// Fixes a rendering issue with the red moving platform in Speed Highway.
 		((NJS_MATERIAL*)0x026710E0)->attrflags &= ~NJD_FLAG_USE_ALPHA;
 
+		// Hot Shelter waterfall fix
+		meshset_suisou_taki_taki_taki[0].type_matId = 0xC001;
+		meshset_suisou_taki_taki_taki[0].nbMesh = 4;
+		meshset_suisou_taki_taki_taki[0].meshes = pgS_1_suisou_taki_taki_taki;
+		meshset_suisou_taki_taki_taki[0].vertuv = vuvS_1_suisou_taki_taki_taki;
+		meshset_suisou_taki_taki_taki[1].type_matId = 0xC000;
+		meshset_suisou_taki_taki_taki[1].nbMesh = 2;
+		meshset_suisou_taki_taki_taki[1].meshes = pgS_0_suisou_taki_taki_taki;
+		meshset_suisou_taki_taki_taki[1].vertuv = vuvS_0_suisou_taki_taki_taki;
+
 		// Leon fix
 		WriteData(reinterpret_cast<float**>(0x004CD75A), &_nj_screen_.w);
 		WriteData(reinterpret_cast<float**>(0x004CD77C), &_nj_screen_.h);
@@ -185,9 +193,13 @@ extern "C"
 
 		// Twinkle Park barrel fix
 		for (int i = 0; i < 102; i++)
+		{
+			// Reverse Us to flip the texture
 			vuvS_2_boom_boomtaru_boomtaru[i].u = 255 - vuvS_2_boom_boomtaru_boomtaru[i].u;
-		for (int v = 27; v < 90; v++)
-			point_boom_boomtaru_boomtaru[v] = BarrelReplacementVertices[v - 27];
+			// Edit vertices from 27 to 89 to match the Gamecube model
+			if (i < 63)
+				point_boom_boomtaru_boomtaru[i + 27] = BarrelReplacementVertices[i];
+		}
 
 		// Eggman model lighting fix
 		reinterpret_cast<NJS_OBJECT*>(0x008961E0)->basicdxmodel->mats[0].attrflags &= ~NJD_FLAG_USE_ALPHA;

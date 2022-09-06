@@ -2,6 +2,9 @@
 
 #include <ninja.h>
 
+DataArray(NJS_TEX, vuvS_2_boom_boomtaru_boomtaru, 0x279C710, 102);
+DataArray(NJS_VECTOR, point_boom_boomtaru_boomtaru, 0x279C9A8, 102);
+
 NJS_VECTOR BarrelReplacementVertices[] = {
 		{ 0, 4.332319f, 1.954301f },
 		{ -1.283041f, 3.001169f, 2.174113f },
