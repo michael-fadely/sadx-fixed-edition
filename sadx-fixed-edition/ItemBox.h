@@ -1,6 +1,6 @@
 #pragma once
 
-#include <SADXModLoader.h>
+#include <SADXStructsNew.h>
 
 DataArray(CCL_INFO, itembox_colli_info0, 0x009BF0C0, 2);
 DataArray(CCL_INFO, itembox_colli_info1, 0x009BF120, 2);

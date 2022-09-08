@@ -21,8 +21,8 @@ void __cdecl Chaos7Explosion_DisplayX(task* a1)
 		SetMaterialAndSpriteColor(&argb_18);
 		njColorBlendingMode(NJD_SOURCE_COLOR, NJD_COLOR_BLENDING_ONE);
 		njColorBlendingMode(NJD_DESTINATION_COLOR, NJD_COLOR_BLENDING_ONE);
-		njPushMatrix(0);
-		njTranslateV(0, &twp->pos);
+		njPushMatrix(nullptr);
+		njTranslateV(nullptr, &twp->pos);
 		sprite_Chaos7Damage.tanim = anim_Chaos7Damage_copy;
 		late_DrawSprite3D(&sprite_Chaos7Damage, id, NJD_SPRITE_ALPHA | NJD_SPRITE_SCALE, LATE_LIG);
 		njPopMatrix(1u);
@@ -41,8 +41,8 @@ void __cdecl Chaos7Damage_DisplayX(task* a1)
 		SetMaterialAndSpriteColor(&argb_19);
 		njColorBlendingMode(NJD_SOURCE_COLOR, NJD_COLOR_BLENDING_ONE);
 		njColorBlendingMode(NJD_DESTINATION_COLOR, NJD_COLOR_BLENDING_ONE);
-		njPushMatrix(0);
-		njTranslateV(0, &twp->pos);
+		njPushMatrix(nullptr);
+		njTranslateV(nullptr, &twp->pos);
 		sprite_Chaos7SDamage.tanim = anim_Chaos7SDamage_copy;
 		late_DrawSprite3D(&sprite_Chaos7SDamage, id, NJD_SPRITE_ALPHA | NJD_SPRITE_SCALE, LATE_LIG);
 		njPopMatrix(1u);
