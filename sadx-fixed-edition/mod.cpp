@@ -22,7 +22,7 @@ static const Uint8 FREECAM_FIX[] = { 0x81, 0x0D, /*0xA8, 0xCB, 0xB2, 0x03, 0x0C,
 static const Uint8 MT_KUSA_NOP[] = { 0x90, 0x90 };
 static const Uint32 CASINO_SPAWN_Y = 0xC3480001; // Secretly a float of about -200.0
 
-static const float KUSA_DISTANCE = 50000.0f;
+static const float KUSA_DISTANCE = 25000.0f;
 
 // Trampoline to make badniks stay when it fails to find the ground - only used by the Sweep badnik
 static Trampoline* GetShadowPosOnWater_t = nullptr;
@@ -63,7 +63,7 @@ static void __cdecl CharSel_LoadA_r()
 	auto original = reinterpret_cast<decltype(CharSel_LoadA_r)*>(CharSel_LoadA_t.Target());
 
 	// Fix broken welds after playing as Metal Sonic
-	MetalSonicFlag = 0;
+	gu8flgPlayingMetalSonic = 0;
 	original();
 }
 
@@ -104,9 +104,16 @@ extern "C"
 		// Item box fixes
 		if (!DLLLoaded_DCMods)
 		{
-			WriteJump(ItemBox_Display_Destroyed, ItemBox_Display_Destroyed_Rotate);
-			WriteJump(ItemBox_Display_Unknown, ItemBox_Display_Unknown_Rotate);
-			WriteJump(ItemBox_Display, ItemBox_Display_Rotate);
+			WriteJump(Draw, ItemBox_Display_Rotate);
+			WriteJump(DrawInWater, ItemBox_Display_Water_Rotate);
+			WriteJump(Draw_Break, ItemBox_Display_Destroyed_Rotate);
+			itembox_colli_info0[0].attr |= 0x200;
+			itembox_colli_info0[0].form = 2;
+			itembox_colli_info0[1].attr |= 0x200;
+			itembox_colli_info1[0].attr |= 0x200;
+			itembox_colli_info1[0].form = 2;
+			itembox_colli_info1[1].attr |= 0x200;
+			itembox_colli_info1[1].form = 2;
 		}
 
 		if (!DLLLoaded_SA1Chars)
