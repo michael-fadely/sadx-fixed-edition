@@ -13,12 +13,6 @@ static bool DLLLoaded_DCMods   = false;
 static bool DLLLoaded_DLCs     = false;
 static bool DLLLoaded_SA1Chars = false;
 
-// Replaces: mov    camerathing,    80000004h
-// With:     or     camerathing,    80000004h
-// Based on information from VeritasDL and code from SADX Steam.
-// Note that SADX Steam seems to use 0x8000000C and not 0x80000004, but it doesn't seem to make a difference.
-// Uncomment to change 0x80000004 to 0x8000000C
-static const Uint8 FREECAM_FIX[] = { 0x81, 0x0D, /*0xA8, 0xCB, 0xB2, 0x03, 0x0C, 0x00, 0x00, 0x80*/ };
 static const Uint8 MT_KUSA_NOP[] = { 0x90, 0x90 };
 static const Uint32 CASINO_SPAWN_Y = 0xC3480001; // Secretly a float of about -200.0
 
@@ -70,10 +64,6 @@ static void __cdecl CharSel_LoadA_r()
 static PatchInfo patches[] = {
 	// MT_KUSA. Also found at 0x0082F216 in SADX 2010
 	{ reinterpret_cast<void*>(0x00608380 + 0x1D), _arrayptrandlength(MT_KUSA_NOP) },
-	// Action stage load and restart
-	{ reinterpret_cast<void*>(0x00438330), _arrayptrandlength(FREECAM_FIX) },
-	// Adventure field scene change
-	{ reinterpret_cast<void*>(0x00434870), _arrayptrandlength(FREECAM_FIX) },
 	// Casinopolis spawn point Y offset fix
 	{ reinterpret_cast<void*>(0x005C0D5D), &CASINO_SPAWN_Y, sizeof(float) }
 };
