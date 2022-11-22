@@ -130,7 +130,7 @@ extern "C"
 		
 		// Fixes Rhino Tank treads.
 		matlist_rhino_catarpl[0].attrflags &= ~NJD_FLAG_CLAMP_MASK;
-		matlist_rhino_catarpl[1].attrflags &= ~NJD_FLAG_CLAMP_MASK;
+		matlist_rhino_catarpr[0].attrflags &= ~NJD_FLAG_CLAMP_MASK;
 
 		// Fixes a rendering issue with the red moving platform in Speed Highway.
 		matlist_crane_cage_cage[0].attrflags &= ~NJD_FLAG_USE_ALPHA;
@@ -172,10 +172,10 @@ extern "C"
 			// Replace the old Eggmobile NPC model with a high-poly one to resolve a texture issue.
 			object_gm_gm0000_eggmoble_eggmoble = _object_gm_gm0000_eggmoble_eggmoble_;
 			// Replace the texlist used by the old model in the Egg Carrier NPC array.
-			WriteData(reinterpret_cast<NJS_TEXLIST**>(0x007D2B22), &texlist_ev_eggmoble0);
+			WriteData(reinterpret_cast<NJS_TEXLIST**>(0x007D2B22), &_texlist_ev_eggmoble0);
 		}
 		// Replace the texlist used by the old Eggman model in the Super Sonic Knuckles' cutscene PVM list.
-		WriteData(reinterpret_cast<NJS_TEXLIST**>(0x02BD5FE4), &texlist_ev_eggmoble0);
+		WriteData(reinterpret_cast<NJS_TEXLIST**>(0x02BD5FE4), &_texlist_ev_eggmoble0);
 
 		// Unflips the Twinkle Park barrel texture and makes the vertices not pop out of the model.
 		for (int i = 0; i < 102; i++)

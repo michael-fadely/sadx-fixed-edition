@@ -25,9 +25,8 @@ DataPointer(NJS_OBJECT, object_e103_kihon0_e103_e_head, 0x0030AB08C);
 DataPointer(NJS_OBJECT, object_e104_kihon0_e104_e_head, 0x030A290C);
 DataPointer(NJS_OBJECT, object_e105old_kihon0_e105old_e_head, 0x0309A21C);
 
-DataArray(NJS_MATERIAL, matlist_rhino_catarpl, 0x038C9DF8, 2); // Rhinotank treads material
+DataArray(NJS_MATERIAL, matlist_rhino_catarpl, 0x038C9DF8, 2); // Rhinotank treads (left) material
+DataArray(NJS_MATERIAL, matlist_rhino_catarpr, 0x038CA220, 2); // Rhinotank treads (right) material 
 DataArray(NJS_MATERIAL, matlist_crane_cage_cage, 0x026710E0, 5); // Speed Highway crane platform
 DataPointer(NJS_OBJECT, object_gm_gm0000_eggmoble_eggmoble, 0x010FEF74); // Eggmobile NPC model (old)
 DataPointer(NJS_OBJECT, _object_gm_gm0000_eggmoble_eggmoble_, 0x02EEB524); // Eggmobile NPC model (updated)
-DataPointer(NJS_TEXLIST, _texlist_ev_eggmoble0, 0x007D2B22); // Eggmobile NPC texlist (old)
-DataPointer(NJS_TEXLIST, texlist_ev_eggmoble0, 0x02EE0AA4); // Eggmobile NPC texlist (updated)
