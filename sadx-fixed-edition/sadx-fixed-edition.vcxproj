@@ -98,7 +98,8 @@ xcopy /Y /D "$(ProjectDir)configschema.xml" "$(OutDir)"</Command>
     <ClInclude Include="..\sadx-mod-loader\libmodutils\Trampoline.h" />
     <ClInclude Include="..\sadx-mod-loader\mod-loader-common\ModLoaderCommon\IniFile.hpp" />
     <ClInclude Include="..\sadx-mod-loader\mod-loader-common\ModLoaderCommon\TextConv.hpp" />
-    <ClInclude Include="barrel.h" />
+    <ClInclude Include="Barrel.h" />
+    <ClInclude Include="DataPointers.h" />
     <ClInclude Include="HotShelterWaterfallFix.h" />
     <ClInclude Include="ItemBox.h" />
     <ClInclude Include="MR_FinalEggFix.h" />
@@ -106,6 +107,7 @@ xcopy /Y /D "$(ProjectDir)configschema.xml" "$(OutDir)"</Command>
     <ClInclude Include="PerfectChaosFixes.h" />
     <ClInclude Include="PlaySegaSonicTeamVoice.h" />
     <ClInclude Include="stdafx.h" />
+    <ClInclude Include="StretchyFeet.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\sadx-mod-loader\libmodutils\Trampoline.cpp" />
@@ -120,6 +122,7 @@ xcopy /Y /D "$(ProjectDir)configschema.xml" "$(OutDir)"</Command>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="StretchyFeet.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="mod.ini" />

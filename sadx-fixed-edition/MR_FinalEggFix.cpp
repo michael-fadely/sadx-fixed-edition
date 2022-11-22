@@ -35,8 +35,22 @@ void FixMRBase(ObjectMaster *a1)
 	Direct3D_SetNearFarPlanes(LevelDrawDistance.Minimum, LevelDrawDistance.Maximum);
 }
 
+void FixMRBase1(NJS_ACTION* action, float frame, float scale)
+{
+	late_DrawModelEx(___ADV02_ACTIONS[0]->object->child->sibling->sibling->basicdxmodel, LATE_LIG);
+	late_ActionClip(action, frame, LATE_WZ, scale);
+	
+}
+
 void FixMRBase_Apply(const char *path, const HelperFunctions &helperFunctions)
 {
+	___ADV02_ACTIONS[0]->object->child->sibling->sibling->evalflags |= NJD_EVAL_HIDE;
+	for (int i = 0; i < 3; i++)
+	{
+		MR3DrawDist[i].Maximum = -32000.0f;
+	}
+	WriteCall((void*)0x00538492, FixMRBase1);
+	return;
 	//MR Base stuff
 	objectADV02_0020454C.evalflags |= NJD_EVAL_HIDE;
 	objectADV02_002046C8.evalflags |= NJD_EVAL_HIDE;
@@ -50,8 +64,5 @@ void FixMRBase_Apply(const char *path, const HelperFunctions &helperFunctions)
 	___ADV02_ACTIONS[0]->object = &objectADV02_0020C3B0; //OFinalEgg
 	___ADV02_ACTIONS[0]->motion = &animation_000862E8; //OFinalEgg animation
 	___ADV02_ACTIONS[30]->object = &objectADV02_0020DC78; //OFinalWay
-	for (int i = 0; i < 3; i++)
-	{
-		MR3DrawDist[i].Maximum = -32000.0f;
-	}
+	
 }
