@@ -5,7 +5,7 @@
 #include "ItemBox.h"
 #include "PlaySegaSonicTeamVoice.h"
 #include "Barrel.h"
-#include "MR_FinalEggFix.h"
+#include "OFinalEgg.h"
 #include "StretchyFeet.h"
 #include "PerfectChaosFixes.h"
 #include "HotShelterWaterfallFix.h"
@@ -217,7 +217,10 @@ extern "C"
 		// Fixes the look of the Final Egg base in the Mystic Ruins.
 		if (!DLLLoaded_DCMods)
 		{
-			FixMRBase_Apply(path, helperFunctions);
+			WriteJump(FinalEggDisplayer, FinalEggDisplayer_r);
+			// Set stage draw distance required for OFinalEgg.
+			for (int i = 0;i < 3;i++)
+				pClipMap_Adv02[2][i].f32Far = -16000.0f;
 		}
 
 		// Fixes Egg Carrier Garden ocean animation by adding the "disable meshset buffer" flag to the COL item.

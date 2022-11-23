@@ -33,10 +33,7 @@
     <ClInclude Include="Barrel.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="OFinalEgg.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="MR_FinalEggFix.h">
+    <ClInclude Include="OFinalEggModel.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="PerfectChaosFixes.h">
@@ -60,6 +57,9 @@
     <ClInclude Include="DataPointers.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="OFinalEgg.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -72,9 +72,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="ItemBox.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="MR_FinalEggFix.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="PerfectChaosFixes.cpp">
@@ -90,6 +87,9 @@
       <Filter>libmodutils</Filter>
     </ClCompile>
     <ClCompile Include="StretchyFeet.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="OFinalEgg.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
