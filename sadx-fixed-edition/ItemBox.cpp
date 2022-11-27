@@ -1,30 +1,27 @@
 #include "stdafx.h"
 #include <SADXModLoader.h>
 
-// TODO: Use trampolines
-// TODO: Ensure collision is rotated
-
-void __cdecl ItemBox_Display_Destroyed_Rotate(ObjectMaster* _this)
+void __cdecl ItemBox_Display_Destroyed_Rotate(task* tp)
 {
-	auto v1 = _this->Data1;
+	auto v1 = tp->twp;
 	SetTextureToCommon();
 	njPushMatrix(nullptr);
-	njTranslateV(nullptr, &v1->Position);
+	njTranslateV(nullptr, &v1->pos);
 
 	// Rotate
-	njRotateEx((Angle*)&v1->Rotation, 0);
+	njRotateEx((Angle*)&v1->ang, 0);
 
-	DrawModel(&ItemBox_Base_MODEL);
+	dsDrawModel(&model_itembox_boxbody_boxbody);
 	njPopMatrix(1u);
 }
 
-void __cdecl ItemBox_Display_Unknown_Rotate(ObjectMaster* _this)
+void __cdecl ItemBox_Display_Water_Rotate(task* tp)
 {
-	auto v1 = _this->Data1;
-	if (!MissedFrames)
+	auto v1 = tp->twp;
+	if (!loop_count)
 	{
-		ItemBoxPowerups[6].Texture = MetalSonicFlag ? 98 : LifeTextures[GetCurrentCharacterID()];
-		if (IsVisible(&v1->Position, 20.0f))
+		item_info[6].texture_id = gu8flgPlayingMetalSonic ? 98 : levelup_texture[GetPlayerNumber()];
+		if (dsCheckViewV(&v1->pos, 20.0f))
 		{
 			SetTextureToCommon();
 			njPushMatrixEx();
@@ -34,66 +31,60 @@ void __cdecl ItemBox_Display_Unknown_Rotate(ObjectMaster* _this)
 
 			if (model && material)
 			{
-				njTranslateEx(&v1->Position);
+				njTranslateEx(&v1->pos);
 
 				// Rotate
-				njRotateEx((Angle*)&v1->Rotation, 0);
+				njRotateEx((Angle*)&v1->ang, 0);
 
-				if (v1->Action != 2)
+				if (v1->mode != 2)
 				{
-					auto scale = v1->Scale.z * 0.2f;
+					auto scale = v1->scl.z * 0.2f;
 					njScale(nullptr, scale, scale, scale);
 				}
 				njPushMatrixEx();
 				njTranslate(nullptr, 0.0f, 7.5f, 0.0f);
-				auto v6 = (Uint16)(v1->Scale.y * 65536.0f * 0.002777777777777778f);
+				auto v6 = (Uint16)(v1->scl.y * 65536.0f * 0.002777777777777778f);
 				if (v6)
 				{
 					njRotateY(nullptr, v6);
 				}
-				memcpy(model, &ItemBox_Item_MODEL, 0x2Cu);
-				memcpy(material, ItemBox_Item_MODEL.mats, 0x14u);
+				memcpy(model, &model_itembox_boxbody_item_panel, 0x2Cu);
+				memcpy(material, model_itembox_boxbody_item_panel.mats, 0x14u);
 				model->mats = material;
-				auto texId = ItemBoxPowerups[(int)_this->Data1->Scale.x].Texture;
-				ItemBox_CurrentItem = (int)_this->Data1->Scale.x;
+				auto texId = item_info[(int)tp->twp->scl.x].texture_id;
+				item_kind = (int)tp->twp->scl.x;
 				material->attr_texId = texId;
-				DrawModel(model);
+				dsDrawModel(model);
 				njPopMatrixEx();
-				DrawQueueDepthBias = 0xC68C4000;
-
-				// This was originally DrawModelIGuess_N, but that's wrong.
-				DrawModel(&ItemBox_Base_MODEL);
-
-				DrawModel_Queue(&ItemBox_Capsule_MODEL, QueuedModelFlagsB_EnableZWrite);
-
-				// This was originally DrawModelIGuess_N, but that's wrong.
-				DrawModel(&ItemBox_Top_MODEL);
-
-				DrawQueueDepthBias = 0;
+				late_z_ofs___ = -27952.0f;
+				dsDrawModel(&model_itembox_boxbody_boxbody); // Bottom
+				dsDrawModel(&model_itembox_boxbody_cyl3); // Top
+				late_DrawModel(&model_itembox_boxbody_cyl2, LATE_LIG); // Glass
+				late_z_ofs___ = 0;
 			}
 			njPopMatrixEx();
 		}
 	}
 }
 
-void __cdecl ItemBox_Display_Rotate(ObjectMaster* _this)
+void __cdecl ItemBox_Display_Rotate(task* tp)
 {
-	auto v1 = _this->Data1;
-	if (!MissedFrames)
+	auto v1 = tp->twp;
+	if (!loop_count)
 	{
-		ItemBoxPowerups[6].Texture = MetalSonicFlag ? 98 : LifeTextures[GetCurrentCharacterID()];
-		if (IsVisible(&v1->Position, 20.0f))
+		item_info[6].texture_id = gu8flgPlayingMetalSonic ? 98 : levelup_texture[GetPlayerNumber()];
+		if (dsCheckViewV(&v1->pos, 20.0f))
 		{
 			SetTextureToCommon();
 			njPushMatrix(nullptr);
-			njTranslateV(nullptr, &v1->Position);
+			njTranslateV(nullptr, &v1->pos);
 
 			// Rotate
-			njRotateEx((Angle*)&v1->Rotation, 0);
+			njRotateEx((Angle*)&v1->ang, 0);
 
-			if (v1->Action != 2)
+			if (v1->mode != 2)
 			{
-				auto scale = v1->Scale.z * 0.2f;
+				auto scale = v1->scl.z * 0.2f;
 				njScale(nullptr, scale, scale, scale);
 			}
 			auto model = (NJS_MODEL_SADX *)late_alloca(44);
@@ -103,29 +94,28 @@ void __cdecl ItemBox_Display_Rotate(ObjectMaster* _this)
 			{
 				njPushMatrixEx();
 				njTranslate(nullptr, 0.0f, 7.5f, 0.0f);
-				auto v6 = (Uint16)(v1->Scale.y * 65536.0f * 0.002777777777777778f);
+				auto v6 = (Uint16)(v1->scl.y * 65536.0f * 0.002777777777777778f);
 				if (v6)
 				{
 					njRotateY(nullptr, v6);
 				}
-				memcpy(model, &ItemBox_Item_MODEL, 0x2Cu);
-				memcpy(material, ItemBox_Item_MODEL.mats, 0x14u);
+				memcpy(model, &model_itembox_boxbody_item_panel, 0x2Cu);
+				memcpy(material, model_itembox_boxbody_item_panel.mats, 0x14u);
 
 				model->mats = material;
-				auto v7 = ItemBoxPowerups[(int)_this->Data1->Scale.x].Texture;
-				ItemBox_CurrentItem = (int)_this->Data1->Scale.x;
+				auto v7 = item_info[(int)tp->twp->scl.x].texture_id;
+				item_kind = (int)tp->twp->scl.x;
 				material->attr_texId = v7;
 
-				DrawModel(model);
+				dsDrawModel(model); // Item icon
 				njPopMatrixEx();
 
-				// This was originally DrawModelIGuess_N, but that's wrong.
-				DrawModel(&ItemBox_Base_MODEL);
-
-				DrawModel_Queue(&ItemBox_Capsule_MODEL, QueuedModelFlagsB_EnableZWrite);
-
-				// This was originally DrawModelIGuess_N, but that's wrong.
-				DrawModel(&ItemBox_Top_MODEL);
+				dsDrawModel(&model_itembox_boxbody_boxbody); // Bottom
+				dsDrawModel(&model_itembox_boxbody_cyl3); // Top
+				late_z_ofs___ = 1000.0f;
+				late_DrawModel(&model_itembox_boxbody_cyl2, LATE_LIG); // Glass
+				late_z_ofs___ = 0.0f;
+				
 			}
 			njPopMatrixEx();
 		}

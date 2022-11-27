@@ -30,16 +30,10 @@
     <ClInclude Include="ItemBox.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="barrel.h">
+    <ClInclude Include="Barrel.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="SkyChaseFixes.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="OFinalEgg.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="MR_FinalEggFix.h">
+    <ClInclude Include="OFinalEggModel.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="PerfectChaosFixes.h">
@@ -57,6 +51,15 @@
     <ClInclude Include="..\sadx-mod-loader\libmodutils\Trampoline.h">
       <Filter>libmodutils</Filter>
     </ClInclude>
+    <ClInclude Include="StretchyFeet.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="DataPointers.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="OFinalEgg.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -71,12 +74,6 @@
     <ClCompile Include="ItemBox.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="SkyChaseFixes.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="MR_FinalEggFix.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="PerfectChaosFixes.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -88,6 +85,12 @@
     </ClCompile>
     <ClCompile Include="..\sadx-mod-loader\libmodutils\Trampoline.cpp">
       <Filter>libmodutils</Filter>
+    </ClCompile>
+    <ClCompile Include="StretchyFeet.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="OFinalEgg.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
