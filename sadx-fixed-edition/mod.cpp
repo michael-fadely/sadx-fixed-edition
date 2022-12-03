@@ -9,6 +9,7 @@
 #include "StretchyFeet.h"
 #include "PerfectChaosFixes.h"
 #include "HotShelterWaterfallFix.h"
+#include "LandtableFixes.h"
 #include "DataPointers.h"
 
 static bool DLLLoaded_DCMods   = false;
@@ -108,26 +109,15 @@ extern "C"
 			itembox_colli_info1[1].attr |= 0x200;
 		}
 
+		// Level collision fixes.
+		LandtableFixes_Init();
+
 		// Fixes Sonic's broken stretchy feet models.
 		FixStretchyFeet();
 
 		// Fixes welds after playing as Metal Sonic.
 		SetAdvaCharMdlTask_t = new Trampoline(0x00512BC0, 0x00512BC6, SetAdvaCharMdlTask_r);
 
-		// Fixes the rotation of the second outcrop on your way out of Emerald Coast 1.
-		NJS_OBJECT* obj = objLandTable0100.pLandEntry[110].pObject;
-
-		obj->ang[0] = 0;
-		obj->ang[1] = 0;
-		obj->ang[2] = 0;
-
-		// Fixes the inverted water in Emerald Coast 2.
-		obj = objLandTable0101.pLandEntry[1].pObject;
-
-		obj->ang[0] = 32768;
-		obj->pos[1] = -3.0f;
-		obj->pos[2] = -5850.0f;
-		
 		// Fixes Rhino Tank treads.
 		matlist_rhino_catarpl[0].attrflags &= ~NJD_FLAG_CLAMP_MASK;
 		matlist_rhino_catarpr[0].attrflags &= ~NJD_FLAG_CLAMP_MASK;
@@ -135,9 +125,11 @@ extern "C"
 		// Fixes a rendering issue with the red moving platform in Speed Highway.
 		matlist_crane_cage_cage[0].attrflags &= ~NJD_FLAG_USE_ALPHA;
 
-		// Casinopolis spawn point Y offset fix.
-		WriteData(reinterpret_cast<float*>(0x005C0D5D), CASINO_SPAWN_Y);
-
+		// Start position fixes.
+		paSonicIP[8].p.y = -10.99982f; // Sonic Speed Highway Act 1
+		paMilesIP[1].p.y = -10.99982f; // Tails Speed Highway Act 1
+		WriteData(reinterpret_cast<float*>(0x005C0D5D), CASINO_SPAWN_Y); // Casinopolis spawn point Y offset fix
+		
 		// Fixes Hot Shelter waterfall animation by swapping meshsets.
 		meshset_suisou_taki_taki_taki[0].type_matId = NJD_MESHSET_MASK | 0x1;
 		meshset_suisou_taki_taki_taki[0].nbMesh = 4;

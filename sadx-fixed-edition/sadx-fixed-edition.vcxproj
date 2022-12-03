@@ -102,6 +102,7 @@ xcopy /Y /D "$(ProjectDir)configschema.xml" "$(OutDir)"</Command>
     <ClInclude Include="DataPointers.h" />
     <ClInclude Include="HotShelterWaterfallFix.h" />
     <ClInclude Include="ItemBox.h" />
+    <ClInclude Include="LandtableFixes.h" />
     <ClInclude Include="OFinalEgg.h" />
     <ClInclude Include="OFinalEggModel.h" />
     <ClInclude Include="PerfectChaosFixes.h" />
@@ -114,6 +115,7 @@ xcopy /Y /D "$(ProjectDir)configschema.xml" "$(OutDir)"</Command>
     <ClCompile Include="..\sadx-mod-loader\mod-loader-common\ModLoaderCommon\IniFile.cpp" />
     <ClCompile Include="..\sadx-mod-loader\mod-loader-common\ModLoaderCommon\TextConv.cpp" />
     <ClCompile Include="ItemBox.cpp" />
+    <ClCompile Include="LandtableFixes.cpp" />
     <ClCompile Include="mod.cpp" />
     <ClCompile Include="OFinalEgg.cpp" />
     <ClCompile Include="PerfectChaosFixes.cpp" />
