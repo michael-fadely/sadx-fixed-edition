@@ -8,6 +8,7 @@ DataArray(_OBJ_LANDENTRY, objLandEntry_49, 0x010386D8, 169); // Emerald Coast Ac
 DataArray(_OBJ_LANDENTRY, objLandEntry_44, 0x026ADBF0, 474); // Speed Highway Act 1 COL list
 DataArray(_OBJ_LANDENTRY, objLandEntry_9, 0x0223B408, 582); // Red Mountain Act 1 COL list
 DataArray(_OBJ_LANDENTRY, objLandEntry_37, 0x024C3980, 381); // Red Mountain Act 3 COL list
+DataArray(_OBJ_LANDENTRY, objLandEntry_6, 0x03405290, 83); // Egg Carrier Garden COL list
 
 void __cdecl LandtableFixes_Init()
 {
@@ -24,6 +25,9 @@ void __cdecl LandtableFixes_Init()
 	obj->ang[0] = 32768;
 	obj->pos[1] = -3.0f;
 	obj->pos[2] = -5850.0f;
+
+	// Fixes Egg Carrier Garden ocean animation by adding the "disable meshset buffer" flag to the COL item.
+	objLandEntry_6[74].slAttribute |= 0x4000000;
 
 	// Fixes buildings in Speed Highway being not solid.
 	objLandEntry_44[91].slAttribute = 0x80000001;

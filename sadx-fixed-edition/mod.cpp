@@ -215,9 +215,6 @@ extern "C"
 				pClipMap_Adv02[2][i].f32Far = -16000.0f;
 		}
 
-		// Fixes Egg Carrier Garden ocean animation by adding the "disable meshset buffer" flag to the COL item.
-		objLandTableGarden01.pLandEntry[74].slAttribute |= 0x4000000;
-
 		// Fixes the water ripple created by air bubbles.
 		WriteCall(reinterpret_cast<void*>(0x007A822B), RippleHack_Bubble);
 
